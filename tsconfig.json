@@ -7,7 +7,13 @@
     "outDir": "lib/cjs",
     "sourceMap": true,
     "declaration": true,
-    "pretty": true
+    "pretty": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true
   },
   "files": [
     "./src/index.ts"
