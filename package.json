@@ -2,18 +2,63 @@
   "name": "tudi",
   "version": "1.0.0",
   "description": "A 2D game engine for Pixi.js.",
-  "main": "index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "jsnext": "lib/esm/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "precommit": "npm run lint",
+    "prepush": "npm run lint",
+    "start:dev": "tsc -m es6 --outDir lib/esm -w",
+    "clean:umd": "rimraf ./lib/umd",
+    "clean:esm": "rimraf ./lib/esm",
+    "clean:cjs": "rimraf ./lib/cjs",
+    "clean:all": "npm run clean:umd && npm run clean:esm && npm run clean:cjs",
+    "build:umd": "npm run clean:umd && rollup --config rollup.config.js",
+    "build:esm": "tsc -m es6 --outDir lib/esm",
+    "build:cjs": "tsc",
+    "build:all": "npm run build:umd",
+    "build": "npm run clean:all && npm run build:all",
+    "lint": "tslint -p ./tsconfig.json --type-check"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/SodiePops/tudi.git"
   },
-  "author": "",
+  "contributors": [
+    {
+      "name": "Ian J Sikes",
+      "email": "ianjsikes@gmail.com"
+    },
+    {
+      "name": "Enrique Piqueras"
+    },
+    {
+      "name": "Owen Wolf",
+      "email": "owen@gowolf.io"
+    },
+    {
+      "name": "Avelina Kim",
+      "email": "avelina@gmail.com"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/SodiePops/tudi/issues"
   },
-  "homepage": "https://github.com/SodiePops/tudi#readme"
+  "homepage": "https://github.com/SodiePops/tudi#readme",
+  "devDependencies": {
+    "husky": "^0.13.3",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.41.6",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-builtins": "^2.1.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-typescript": "^0.8.1",
+    "rollup-watch": "^3.2.2",
+    "tslint": "^5.1.0",
+    "typescript": "^2.2.2"
+  },
+  "dependencies": {
+    "pixi.js": "^4.5.0"
+  }
 }

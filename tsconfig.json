@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "module": "commonjs",
+    "target": "es5",
+    "lib": ["es2017", "dom"],
+    "outDir": "lib/cjs",
+    "sourceMap": true,
+    "declaration": true,
+    "pretty": true
+  },
+  "files": [
+    "./src/index.ts"
+  ]
+}
