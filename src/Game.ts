@@ -1,3 +1,6 @@
+/**
+ * Game Class.
+ */
 import * as PIXI from 'pixi.js'
 import Scene from './Scene'
 

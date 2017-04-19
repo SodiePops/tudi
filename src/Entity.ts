@@ -1,2 +1,5 @@
-export default class Entity {
-}
+/**
+ * Entity Class.
+ */
+// export default class Entity {
+// }

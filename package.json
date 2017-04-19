@@ -9,7 +9,7 @@
   "scripts": {
     "precommit": "npm run lint",
     "prepush": "npm run lint",
-    "start:dev": "tsc -m es6 --outDir lib/esm -w",
+    "start": "tsc -m es6 --outDir lib/esm -w",
     "clean:umd": "rimraf ./lib/umd",
     "clean:esm": "rimraf ./lib/esm",
     "clean:cjs": "rimraf ./lib/cjs",
@@ -19,7 +19,7 @@
     "build:cjs": "tsc",
     "build:all": "npm run build:umd && npm run build:esm && npm run build:cjs",
     "build": "npm run clean:all && npm run build:all",
-    "lint": "tslint -p ./tsconfig.json --type-check"
+    "lint": "tslint --project ./tsconfig.json --type-check"
   },
   "repository": {
     "type": "git",
@@ -57,7 +57,8 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
-    "tslint": "^5.1.0",
+    "tslint": "<5",
+    "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "^2.2.2"
   },
   "dependencies": {
