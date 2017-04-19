@@ -1,10 +1,5 @@
-# Engine
+# tudi
 > Javascript Game Engine
-
-
-### TODO
-
-+ Change name from 'engine'
 
 
 ### Notes
