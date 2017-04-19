@@ -12,6 +12,8 @@ export default class Game {
   constructor(width: number, height: number) {
     this.renderer = PIXI.autoDetectRenderer(width, height)
     document.body.appendChild(this.renderer.view)
+
+    this.update = this.update.bind(this)
   }
 
   start(scene?: Scene): void {
