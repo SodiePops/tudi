@@ -10,9 +10,14 @@ export default {
   moduleName: 'tudi',
 
   plugins: [
-    typescript(),
+    typescript({ typescript: require('typescript')} ),
     resolve({ module: true, jsnext: true, main: true }),
-    commonjs(),
+    commonjs({
+      namedExports: {
+        'node_modules/pixi.js/lib/index.js': ['autoDetectRenderer', 'Container'],
+        'node_modules/pixi.js/lib/polyfill/Math.sign.js': ['default'],
+      }
+    }),
     builtins(),
   ],
 };

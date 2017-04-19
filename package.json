@@ -5,6 +5,7 @@
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "jsnext": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
   "scripts": {
     "precommit": "npm run lint",
     "prepush": "npm run lint",
@@ -16,7 +17,7 @@
     "build:umd": "npm run clean:umd && rollup --config rollup.config.js",
     "build:esm": "tsc -m es6 --outDir lib/esm",
     "build:cjs": "tsc",
-    "build:all": "npm run build:umd",
+    "build:all": "npm run build:umd && npm run build:esm && npm run build:cjs",
     "build": "npm run clean:all && npm run build:all",
     "lint": "tslint -p ./tsconfig.json --type-check"
   },
@@ -47,6 +48,7 @@
   },
   "homepage": "https://github.com/SodiePops/tudi#readme",
   "devDependencies": {
+    "@types/pixi.js": "^4.4.3",
     "husky": "^0.13.3",
     "rimraf": "^2.6.1",
     "rollup": "^0.41.6",
