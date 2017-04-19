@@ -1,7 +1,8 @@
-import typescript from 'rollup-plugin-typescript';
-import resolve from 'rollup-plugin-node-resolve';
-import commonjs from 'rollup-plugin-commonjs';
-import builtins from 'rollup-plugin-node-builtins';
+import typescript from 'rollup-plugin-typescript'
+import resolveNodeModules from 'rollup-plugin-node-resolve'
+import commonjs from 'rollup-plugin-commonjs'
+import builtins from 'rollup-plugin-node-builtins'
+import builtinsGlobals from 'rollup-plugin-node-globals'
 
 export default {
   entry: 'src/index.ts',
@@ -11,7 +12,7 @@ export default {
 
   plugins: [
     typescript({ typescript: require('typescript')} ),
-    resolve({ module: true, jsnext: true, main: true }),
+    resolveNodeModules({ module: true, jsnext: true, main: true }),
     commonjs({
       namedExports: {
         'node_modules/pixi.js/lib/index.js': ['autoDetectRenderer', 'Container'],
@@ -19,5 +20,6 @@ export default {
       }
     }),
     builtins(),
+    builtinsGlobals(),
   ],
-};
+}
