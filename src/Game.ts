@@ -14,27 +14,18 @@ export default class Game {
     document.body.appendChild(this.renderer.view)
   }
 
-  start(scene?: Scene) {
-    let s: Scene
-    if (scene) {
-      s = scene
-    } else if (this.activeScene) {
-      s = this.activeScene
-    } else {
-      s = new Scene()
-    }
-
-    this.activeScene = s
-    this.renderer.render(s.stage)
+  start(scene?: Scene): void {
+    this.activeScene = scene || this.activeScene || new Scene()
+    this.update()
   }
 
-  update(tFrame: number) {
-    requestAnimationFrame(this.update)
-
-    // Do some stuff
+  update(): void {
+    this.renderer.render(this.activeScene.stage)
+    this.activeScene.update()
+    this.animationFrame = requestAnimationFrame(this.update)
   }
 
-  stop() {
+  stop(): void {
     cancelAnimationFrame(this.animationFrame)
   }
 }
