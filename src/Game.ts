@@ -5,9 +5,9 @@ import * as PIXI from 'pixi.js'
 import Scene from './Scene'
 
 export default class Game {
-  renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
-  activeScene: Scene
-  animationFrame: number
+  private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
+  private activeScene: Scene
+  private animationFrame: number
 
   constructor(width: number, height: number) {
     this.renderer = PIXI.autoDetectRenderer(width, height)
@@ -19,7 +19,7 @@ export default class Game {
     this.update()
   }
 
-  update(): void {
+  private update(): void {
     this.renderer.render(this.activeScene.stage)
     this.activeScene.update()
     this.animationFrame = requestAnimationFrame(this.update)
