@@ -1,7 +1,12 @@
 import Component from './Components/Component'
 
 /**
- * Entity Class.
+ * An Entity exists in the game world and has
+ * a collection of Components that describe its
+ * behavior.
+ *
+ * @export
+ * @class Entity
  */
 export default class Entity {
   static count: number = 0

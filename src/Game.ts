@@ -1,9 +1,14 @@
-/**
- * Game Class.
- */
 import * as PIXI from 'pixi.js'
 import Scene from './Scene'
 
+/**
+ * The Game handles operation of the entire game (duh).
+ * It runs the update loop and dispatches other lifetime
+ * events.
+ *
+ * @export
+ * @class Game
+ */
 export default class Game {
   private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
   private scene: Scene

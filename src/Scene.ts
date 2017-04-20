@@ -3,9 +3,14 @@ import System from './Systems/System'
 import Entity from './Entity'
 
 /**
- * Scene Class.
+ * A Scene is the root of a hierarchy of entities.
+ * It handles loading of assets and propagating of
+ * events through the scene hierarchy. It could be
+ * thought of as a "level".
+ *
+ * @export
+ * @class Scene
  */
-
 export default class Scene {
   stage: PIXI.Container
   systems: System[]
