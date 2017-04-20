@@ -33,7 +33,7 @@
     "completed-docs": [
       false
     ],
-    "curly": true,
+    "curly": false,
     "cyclomatic-complexity": [
       false
     ],
