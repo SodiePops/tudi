@@ -14,7 +14,7 @@
     "clean:esm": "rimraf ./lib/esm",
     "clean:cjs": "rimraf ./lib/cjs",
     "clean:all": "npm run clean:umd && npm run clean:esm && npm run clean:cjs",
-    "build:umd": "npm run clean:umd && rollup --config rollup.config.js",
+    "build:umd": "rollup --config rollup.config.js",
     "build:esm": "tsc -m es6 --outDir lib/esm",
     "build:cjs": "tsc",
     "build:all": "npm run build:umd && npm run build:esm && npm run build:cjs",
