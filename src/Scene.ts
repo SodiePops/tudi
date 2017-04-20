@@ -1,17 +1,30 @@
+import * as PIXI from 'pixi.js'
+import System from './Systems/System'
+import Entity from './Entity'
+
 /**
  * Scene Class.
  */
-import * as PIXI from 'pixi.js'
 
 export default class Scene {
   stage: PIXI.Container
-  // entities: Entity[]
+  systems: System[]
+  entities: Entity[]
 
-  constructor() {
+  constructor(resources: string[], systems: System[], entities: Entity[]) {
     this.stage = new PIXI.Container()
+    this.systems = systems
+    this.entities = entities
+
+    for (const resource of resources) {
+      PIXI.loader.add(resource)
+    }
   }
 
-  update(): void {
+  update (dt: number): void {
     // Call update on every entity in entities
+    for (const entity of this.entities) {
+      entity.update(dt)
+    }
   }
 }
