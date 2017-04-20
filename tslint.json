@@ -51,7 +51,7 @@
       true,
       "spaces"
     ],
-    "insecure-random": true,
+    "insecure-random": false,
     "interface-name": [false],
     "interface-over-type-literal": false,
     "jquery-deferred-must-complete": true,
@@ -93,7 +93,7 @@
     "no-arg": true,
     "no-backbone-get-set-outside-model": true,
     "no-banned-terms": true,
-    "no-bitwise": true,
+    "no-bitwise": false,
     "no-conditional-assignment": true,
     "no-consecutive-blank-lines": [
       true
@@ -135,7 +135,7 @@
       "http://www.example.com/?.*",
       "http://www.examples.com/?.*"
     ],
-    "no-increment-decrement": true,
+    "no-increment-decrement": false,
     "no-inferrable-types": [
       false
     ],
