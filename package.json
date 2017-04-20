@@ -4,7 +4,7 @@
   "description": "A 2D game engine for Pixi.js.",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
-  "jsnext": "lib/esm/index.js",
+  "jsnext:main": "lib/esm/index.js",
   "types": "lib/esm/index.d.ts",
   "scripts": {
     "precommit": "npm run lint",
