@@ -24,23 +24,23 @@ export default class Game {
     // this.systems = [
     //   new RenderSystem(this.scene, width, height),
     // ]
-    // document.body.appendChild(this.renderer.view)
+    document.body.appendChild(this.renderer.view)
 
     this.update = this.update.bind(this)
   }
 
-  async start (scene?: Scene): Promise<void> {
+  start (scene?: Scene): Promise<void> {
     this.scene = scene || this.scene
     this.isPlaying = true
-    await this.setup()
+    return this.setup()
   }
 
-  private async setup (): Promise<void> {
+  private setup (): Promise<void> {
     // for (const system of this.systems) {
     //   system.setup()
     // }
-    await this.scene.setup()
-    this.update()
+    return this.scene.setup()
+      .then(() => this.update())
   }
 
   private update (timestamp: number = 0): void {

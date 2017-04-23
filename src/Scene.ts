@@ -23,13 +23,14 @@ export default class Scene {
     this.resources = resources
   }
 
-  async setup (): Promise<void> {
-    await ResourceManager.loadResources(this.resources)
-
-    for (const entity of this.entities) {
-      entity.scene = this
-      entity.setup()
-    }
+  setup (): Promise<void> {
+    return ResourceManager.loadResources(this.resources)
+    .then(() => {
+      for (const entity of this.entities) {
+        entity.scene = this
+        entity.setup()
+      }
+    })
   }
 
   update (dt: number): void {

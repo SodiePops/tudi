@@ -58,6 +58,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
+    "tslib": "^1.6.1",
     "tslint": "<5",
     "tslint-microsoft-contrib": "^4.0.1",
     "typescript": "^2.2.2"
