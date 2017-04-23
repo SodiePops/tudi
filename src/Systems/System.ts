@@ -8,6 +8,7 @@
  * @class System
  */
 abstract class System {
+  abstract setup (): void
   abstract update (dt: number): void
 }
 

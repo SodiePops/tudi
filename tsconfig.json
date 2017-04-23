@@ -13,7 +13,9 @@
     "noImplicitThis": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true
+    "noUnusedParameters": true,
+    "noEmitHelpers": true,
+    "importHelpers": true
   },
   "files": [
     "./src/index.ts"
