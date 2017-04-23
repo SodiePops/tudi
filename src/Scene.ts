@@ -2,7 +2,6 @@ import * as PIXI from 'pixi.js'
 import Entity from './Entity'
 import * as ResourceManager from './Util/ResourceManager'
 
-
 /**
  * A Scene is the root of a hierarchy of entities.
  * It handles loading of assets and propagating of
