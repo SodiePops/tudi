@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
-import System from './Systems/System'
 import Entity from './Entity'
+import * as ResourceManager from './Util/ResourceManager'
+
 
 /**
  * A Scene is the root of a hierarchy of entities.
@@ -13,16 +14,22 @@ import Entity from './Entity'
  */
 export default class Scene {
   stage: PIXI.Container
-  systems: System[]
+  entityCount: number
   entities: Entity[]
+  resources: string[]
 
-  constructor(resources: string[], systems: System[], entities: Entity[]) {
+  constructor(resources: string[], entities: Entity[]) {
     this.stage = new PIXI.Container()
-    this.systems = systems
     this.entities = entities
+    this.resources = resources
+  }
 
-    for (const resource of resources) {
-      PIXI.loader.add(resource)
+  async setup (): Promise<void> {
+    await ResourceManager.loadResources(this.resources)
+
+    for (const entity of this.entities) {
+      entity.scene = this
+      entity.setup()
     }
   }
 
