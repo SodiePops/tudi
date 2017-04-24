@@ -1,4 +1,4 @@
-import Component from './Components/Component'
+import { Component } from './Components'
 import Scene from './Scene'
 
 export interface Vec2 {x: number, y: number}

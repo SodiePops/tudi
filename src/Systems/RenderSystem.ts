@@ -5,6 +5,9 @@ import System from './System'
  * @class RenderSystem
  */
 export default class RenderSystem extends System {
+  setup (): void {
+    // T O D O
+  }
   update (dt: number): void {
     // T O D O
   }
