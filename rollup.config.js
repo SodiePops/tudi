@@ -15,7 +15,7 @@ export default {
     resolveNodeModules({ module: true, jsnext: true, main: true }),
     commonjs({
       namedExports: {
-        'node_modules/pixi.js/lib/index.js': ['autoDetectRenderer', 'Container'],
+        'node_modules/pixi.js/lib/index.js': ['autoDetectRenderer', 'Container', 'Sprite'],
         'node_modules/pixi.js/lib/polyfill/Math.sign.js': ['default'],
       }
     }),
