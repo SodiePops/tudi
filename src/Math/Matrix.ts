@@ -1,3 +1,5 @@
+import Vec2 from './Vec2'
+
 /**
  * A 3x3 Matrix
  * [a, b, tx]
@@ -50,6 +52,13 @@ export default class Matrix {
     return this
   }
 
+  vectorMultiply (v: Vec2): Vec2 {
+    const x: number = this.a * v.x + this.b * v.y + this.tx
+    const y: number = this.c * v.x + this.d * v.y + this.ty
+
+    return new Vec2(x, y)
+  }
+
   multiply (m: Matrix): Matrix {
     const a: number = this.a * m.a + this.b * m.c
     const b: number = this.a * m.b + this.b * m.d
@@ -87,5 +96,29 @@ export default class Matrix {
 
   clone (): Matrix {
     return new Matrix(this.a, this.b, this.tx, this.c, this.d, this.ty)
+  }
+
+  static TRANSLATE ({x, y}: Vec2): Matrix {
+    return new Matrix(0, 0, x, 0, 0, y)
+  }
+
+  static ROTATE (theta: number): Matrix {
+    const sin: number = Math.sin(theta)
+    const cos: number = Math.cos(theta)
+
+    return new Matrix(cos, sin, 0, -sin, cos, 0)
+  }
+
+  static SCALE ({x, y}: Vec2): Matrix {
+    return new Matrix(x, 0, 0, 0, y, 0)
+  }
+
+  static MULTIPLY (...matrices: Matrix[]): Matrix {
+    if (matrices.length > 1) {
+      const n: Matrix = new Matrix(1, 0, 0, 0, 1, 0)
+      for (const m of matrices) n.multiply(m)
+      return n
+    } else if (matrices.length === 1) return matrices[1]
+    else return new Matrix(0, 0, 0, 0, 0, 0)
   }
 }
