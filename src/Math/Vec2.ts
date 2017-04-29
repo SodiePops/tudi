@@ -2,7 +2,7 @@
  * Represents a point in 2D space
  * @class Vec2
  */
-export default class Vec2 {
+export class Vec2 {
   x: number
   y: number
 
@@ -22,5 +22,9 @@ export default class Vec2 {
   copy (other: Vec2): void {
     this.x = other.x
     this.y = other.y
+  }
+
+  toString (): string {
+    return `<${this.x}, ${this.y}>`
   }
 }

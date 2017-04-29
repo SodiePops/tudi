@@ -1,4 +1,4 @@
-import Vec2 from './Vec2'
+import { Vec2 } from './Vec2'
 
 /**
  * A 3x3 Matrix
@@ -8,16 +8,13 @@ import Vec2 from './Vec2'
  * @export
  * @class Matrix
  */
-export default class Matrix {
-  static IDENTITY: Matrix = new Matrix(1, 0, 0, 0, 1, 0)
-
+export class Matrix {
   a: number = 1
   b: number = 0
   tx: number = 0
   c: number = 0
   d: number = 1
   ty: number = 0
-
 
   constructor (a: number, b: number, tx: number,
                c: number, d: number, ty: number) {
@@ -27,6 +24,24 @@ export default class Matrix {
     this.c = c
     this.d = d
     this.ty = ty
+  }
+
+  toArray (): number[] {
+    return [this.a, this.b, this.tx, this.c, this.d, this.ty]
+  }
+
+  decompose (): number[] {
+    return [
+      this.tx,
+      this.ty,
+      Math.sqrt((this.a * this.a) + (this.b * this.b)),
+      Math.sqrt((this.c * this.c) + (this.d * this.d)),
+      0,
+      0,
+      0,
+      0,
+      0,
+    ]
   }
 
   reset (a: number, b: number, tx: number,
@@ -114,11 +129,21 @@ export default class Matrix {
   }
 
   static MULTIPLY (...matrices: Matrix[]): Matrix {
+    // console.log('MULTIPLY', matrices)
     if (matrices.length > 1) {
       const n: Matrix = new Matrix(1, 0, 0, 0, 1, 0)
-      for (const m of matrices) n.multiply(m)
+      for (const m of matrices) {
+        console.log('multiplying...')
+        n.multiply(m)
+        console.log(n)
+      }
+      console.log('MULTIPLY', n)
       return n
     } else if (matrices.length === 1) return matrices[1]
     else return new Matrix(0, 0, 0, 0, 0, 0)
+  }
+
+  static IDENTITY (): Matrix {
+    return new Matrix(1, 0, 0, 0, 1, 0)
   }
 }

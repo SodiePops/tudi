@@ -1,14 +1,18 @@
-import { Component } from './Components'
+import {
+  Component,
+  Transform,
+  TransformInitalizer,
+} from './Components'
 import Scene from './Scene'
 
-export interface Vec2 {x: number, y: number}
-export interface Transform {
-  pos: Vec2,
-  scale: Vec2,
-  pivot: Vec2,
-  skew: Vec2,
-  rotation: number,
-}
+// export interface Vec2 {x: number, y: number}
+// export interface Transform {
+//   pos: Vec2,
+//   scale: Vec2,
+//   pivot: Vec2,
+//   skew: Vec2,
+//   rotation: number,
+// }
 
 /**
  * An Entity exists in the game world and has
@@ -19,21 +23,25 @@ export interface Transform {
  * @class Entity
  */
 export default class Entity {
+  name: string
   id: string
   scene: Scene
-  transform: Transform = {
-    pos: {x: 0, y: 0},
-    scale: {x: 0, y: 0},
-    pivot: {x: 0, y: 0},
-    skew: {x: 0, y: 0},
-    rotation: 0,
-  }
+  transform: Transform
+  // transform: Transform = {
+  //   pos: {x: 0, y: 0},
+  //   scale: {x: 0, y: 0},
+  //   pivot: {x: 0, y: 0},
+  //   skew: {x: 0, y: 0},
+  //   rotation: 0,
+  // }
+  parent: Entity = null
   private components: { [name: string]: Component } = {}
   private children: { [name: string]: Entity } = {}
 
-  constructor (transform: Partial<Transform>, components?: Component[], children?: Entity[]) {
+  constructor (name: string, transform: TransformInitalizer, components?: Component[], children?: Entity[]) {
+    this.name = name
     this.id = Entity.GENERATE_ID()
-    this.transform = { ...this.transform, ...transform }
+    this.transform = new Transform(transform)
     if (components) {
       for (const component of components) {
         this.components[component.name] = component
@@ -53,6 +61,7 @@ export default class Entity {
   addChild (child: Entity): void {
     this.children[child.id] = child
     child.scene = this.scene
+    child.parent = this
     child.setup()
   }
 
@@ -82,17 +91,24 @@ export default class Entity {
 
   setup (): void {
     this.scene.entityCount++
+    this.transform.entity = this
+    this.transform.setup()
     for (const component of Object.values(this.components)) {
       component.entity = this
       component.setup()
     }
     for (const child of Object.values(this.children)) {
       child.scene = this.scene
+      child.parent = this
+      // console.log(`Setting child's parent`, child.parent)
       child.setup()
     }
+    // console.log('Parent', this.parent, 'Position', this.transform.position)
+    // console.log('World position', this.transform.worldPosition)
   }
 
   update (dt: number): void {
+    this.transform.update()
     for (const component of Object.values(this.components)) {
       component.update(dt)
     }

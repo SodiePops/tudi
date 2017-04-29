@@ -24,8 +24,11 @@ export class SpriteComponent extends Component {
     }
   }
 
-  update (dt: number): void {
-    // TODO
-    dt++
+  update (): void {
+    // const wtArr: number[] = this.entity.transform.worldTransform.toArray()
+    // wtArr[5] += dt
+    // this.sprite.transform.worldTransform.fromArray(wtArr)
+    // (<any>this.sprite).setTransform(...this.entity.transform.worldTransform.decompose())
+    this.sprite.position.x = 30
   }
 }
