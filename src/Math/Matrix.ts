@@ -26,25 +26,67 @@ export class Matrix {
     this.ty = ty
   }
 
+  clone (): Matrix {
+    return new Matrix(this.a, this.b, this.tx, this.c, this.d, this.ty)
+  }
+
   toArray (): number[] {
     return [this.a, this.b, this.tx, this.c, this.d, this.ty]
   }
 
-  decompose (): number[] {
-    return [
-      this.tx,
-      this.ty,
-      Math.sqrt((this.a * this.a) + (this.b * this.b)),
-      Math.sqrt((this.c * this.c) + (this.d * this.d)),
-      0,
-      0,
-      0,
-      0,
-      0,
-    ]
+  toString (): string {
+    return `┌${this.a} ${this.b} ${this.tx}┐
+│${this.c} ${this.d} ${this.ty}│
+└0 0 1┘`
   }
 
-  reset (a: number, b: number, tx: number,
+  decompose (): any {
+    let position: Vec2
+    let scale: Vec2
+    let skew: Vec2
+    let rotation: number
+
+    const skewX: number = -Math.atan2(-this.c, this.d)
+    const skewY: number = Math.atan2(this.b, this.a)
+    const delta: number = Math.abs(skewX + skewY)
+    skew = new Vec2(skewX, skewY)
+
+    if (delta < 0.00001) {
+      rotation = skewY
+
+      if (this.a < 0 && this.d >= 0) {
+        rotation += (rotation <= 0) ? Math.PI : -Math.PI
+      }
+
+      skew = new Vec2(0, 0)
+    }
+
+    scale = new Vec2(
+      Math.sqrt((this.a * this.a) + (this.b * this.b)),
+      Math.sqrt((this.c * this.c) + (this.d * this.d)),
+    )
+
+    position = new Vec2(this.tx, this.ty)
+
+    return {
+      position,
+      scale,
+      skew,
+      rotation,
+    }
+  }
+
+  transformPoint (v: Vec2): Vec2 {
+    const x: number = this.a * v.x + this.b * v.y + this.tx
+    const y: number = this.c * v.x + this.d * v.y + this.ty
+
+    return new Vec2(x, y)
+  }
+
+  // -----------------------
+  // Private mutator methods
+  // -----------------------
+  private reset (a: number, b: number, tx: number,
          c: number, d: number, ty: number): Matrix {
     this.a = a
     this.b = b
@@ -56,65 +98,22 @@ export class Matrix {
     return this
   }
 
-  scalarMultiply (n: number): Matrix {
-    this.a *= n
-    this.b *= n
-    this.tx *= n
-    this.c *= n
-    this.d *= n
-    this.ty *= n
-
-    return this
-  }
-
-  vectorMultiply (v: Vec2): Vec2 {
-    const x: number = this.a * v.x + this.b * v.y + this.tx
-    const y: number = this.c * v.x + this.d * v.y + this.ty
-
-    return new Vec2(x, y)
-  }
-
-  multiply (m: Matrix): Matrix {
-    const a: number = this.a * m.a + this.b * m.c
-    const b: number = this.a * m.b + this.b * m.d
-    const tx: number = this.a * m.tx + this.b * m.ty + this.tx
-    const c: number = this.c * m.a + this.d * m.c
-    const d: number = this.c * m.b + this.d * m.d
-    const ty: number = this.c * m.tx + this.d * m.ty + this.ty
+  private multiply (m: Matrix): Matrix {
+    const a: number = m.a * this.a + m.b * this.c
+    const b: number = m.a * this.b + m.b * this.d
+    const tx: number = m.a * this.tx + m.b * this.ty + m.tx
+    const c: number = m.c * this.a + m.d * this.c
+    const d: number = m.c * this.b + m.d * this.d
+    const ty: number = m.c * this.tx + m.d * this.ty + m.ty
 
     return this.reset(a, b, tx, c, d, ty)
   }
 
-  translate (x: number, y: number): Matrix {
-    const translationMatrix: Matrix = new Matrix(0, 0, x, 0, 0, y)
-    return this.multiply(translationMatrix)
-  }
-
-  scale (w: number, h: number): Matrix {
-    const scaleMatrix: Matrix = new Matrix(w, 0, 0, 0, h, 0)
-    return this.multiply(scaleMatrix)
-  }
-
-  rotate (theta: number): Matrix {
-    const sin: number = Math.sin(theta)
-    const cos: number = Math.cos(theta)
-
-    const rotationMatrix: Matrix =
-      new Matrix(cos, sin, 0, -sin, cos, 0)
-    return this.multiply(rotationMatrix)
-  }
-
-  skew (x: number, y: number): Matrix {
-    const skewMatrix: Matrix = new Matrix(1, x, 0, y, 1, 0)
-    return this.multiply(skewMatrix)
-  }
-
-  clone (): Matrix {
-    return new Matrix(this.a, this.b, this.tx, this.c, this.d, this.ty)
-  }
-
+  // ------------------------------------
+  // Static methods for creating matrices
+  // ------------------------------------
   static TRANSLATE ({x, y}: Vec2): Matrix {
-    return new Matrix(0, 0, x, 0, 0, y)
+    return new Matrix(1, 0, x, 0, 1, y)
   }
 
   static ROTATE (theta: number): Matrix {
@@ -128,19 +127,22 @@ export class Matrix {
     return new Matrix(x, 0, 0, 0, y, 0)
   }
 
+  static SKEW ({x, y}: Vec2): Matrix {
+    return new Matrix(1, x, 0, y, 1, 0)
+  }
+
   static MULTIPLY (...matrices: Matrix[]): Matrix {
-    // console.log('MULTIPLY', matrices)
     if (matrices.length > 1) {
       const n: Matrix = new Matrix(1, 0, 0, 0, 1, 0)
       for (const m of matrices) {
-        console.log('multiplying...')
         n.multiply(m)
-        console.log(n)
       }
-      console.log('MULTIPLY', n)
       return n
-    } else if (matrices.length === 1) return matrices[1]
-    else return new Matrix(0, 0, 0, 0, 0, 0)
+    } else if (matrices.length === 1) {
+      return matrices[0]
+    } else {
+      return Matrix.IDENTITY()
+    }
   }
 
   static IDENTITY (): Matrix {

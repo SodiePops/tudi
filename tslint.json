@@ -24,8 +24,6 @@
     "arrow-parens": false,
     "ban": false,
     "callable-types": true,
-    "chai-prefer-contains-to-index-of": true,
-    "chai-vague-errors": true,
     "class-name": true,
     "comment-format": [
       false
