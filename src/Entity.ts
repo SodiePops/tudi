@@ -112,6 +112,9 @@ export default class Entity {
     for (const component of Object.values(this.components)) {
       component.update(dt)
     }
+    for (const child of Object.values(this.children)) {
+      child.update(dt)
+    }
   }
 
   /**

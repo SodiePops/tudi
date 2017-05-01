@@ -32,43 +32,34 @@ export class Transform extends Component {
 
   private updateLocalTransform (): void {
     if (!this.isDirty) { return }
-
     this.localTransform = Matrix.MULTIPLY(
       Matrix.TRANSLATE(this.pposition),
       Matrix.ROTATE(this.rrotation),
       Matrix.SCALE(this.sscale),
     )
+    this.isDirty = false
   }
 
   updateTransform (parentTransform?: Transform): void {
-    console.log(this.entity.name, 'updateTransform')
     this.updateLocalTransform()
-    // console.log(parentTransform, this)
 
     if (!parentTransform) {
-      console.log(this.entity.name, 'worldTransform = localTransform')
       this.worldTransform = this.localTransform
     } else {
       const lt: Matrix = this.localTransform
       const pt: Matrix = parentTransform.worldTransform
-
       this.worldTransform = Matrix.MULTIPLY(lt, pt)
-      console.log(this.entity.name, 'worldTransform is lt * pt')
-      console.log(lt, pt)
     }
   }
 
   setup (): void {
     const pt: Transform = this.entity.parent && this.entity.parent.transform
-    console.log(this.entity.name, 'transform setup', pt)
     this.updateTransform(pt)
-    // console.log(this.localTransform, this.worldTransform)
   }
 
   update (): void {
-    // const pt: Transform = this.entity.parent && this.entity.parent.transform
-    // console.log(this.entity, this.entity.parent)
-    // this.updateTransform(pt)
+    const pt: Transform = this.entity.parent && this.entity.parent.transform
+    this.updateTransform(pt)
   }
 
   //------------

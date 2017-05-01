@@ -29,6 +29,10 @@ export class SpriteComponent extends Component {
     // wtArr[5] += dt
     // this.sprite.transform.worldTransform.fromArray(wtArr)
     // (<any>this.sprite).setTransform(...this.entity.transform.worldTransform.decompose())
-    this.sprite.position.x = 30
+    const {x, y}: {x: number, y: number} = this.entity.transform.worldPosition
+    this.sprite.position.set(x, y)
+    // this.sprite.transform.worldTransform.fromArray(this.entity.transform.worldTransform.toArray())
+    // (<any>this.sprite.transform).worldTransform = this.entity.transform.worldTransform
+    // this.sprite.position.x = 30
   }
 }
