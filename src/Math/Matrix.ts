@@ -2,9 +2,9 @@ import { Vec2 } from './Vec2'
 
 /**
  * A 3x3 Matrix
- * [a, b, tx]
- * [c, d, ty]
- * [0, 0,  1]
+ * ┌a, b, tx┐
+ * │c, d, ty│
+ * └0, 0,  1┘
  * @export
  * @class Matrix
  */
@@ -40,40 +40,46 @@ export class Matrix {
 └0 0 1┘`
   }
 
-  decompose (): any {
-    let position: Vec2
-    let scale: Vec2
-    let skew: Vec2
-    let rotation: number
+  decompose (): {position: Vec2, scale: Vec2, skew: Vec2, rotation: number} {
+    const transform: {position: Vec2, scale: Vec2, skew: Vec2, rotation: number} = {
+      position: new Vec2(0, 0),
+      scale: new Vec2(0, 0),
+      skew: new Vec2(0, 0),
+      rotation: 0,
+    }
 
-    const skewX: number = -Math.atan2(-this.c, this.d)
-    const skewY: number = Math.atan2(this.b, this.a)
+    const a: number = this.a
+    const b: number = this.b
+    const c: number = this.c
+    const d: number = this.d
+
+    const skewX: number = -Math.atan2(-c, d)
+    const skewY: number = Math.atan2(b, a)
+
     const delta: number = Math.abs(skewX + skewY)
-    skew = new Vec2(skewX, skewY)
 
     if (delta < 0.00001) {
-      rotation = skewY
+        transform.rotation = skewY
 
-      if (this.a < 0 && this.d >= 0) {
-        rotation += (rotation <= 0) ? Math.PI : -Math.PI
-      }
+        if (a < 0 && d >= 0) {
+            transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI
+        }
 
-      skew = new Vec2(0, 0)
+        transform.skew.x = transform.skew.y = 0
+    } else {
+        transform.skew.x = skewX
+        transform.skew.y = skewY
     }
 
-    scale = new Vec2(
-      Math.sqrt((this.a * this.a) + (this.b * this.b)),
-      Math.sqrt((this.c * this.c) + (this.d * this.d)),
-    )
+    // next set scale
+    transform.scale.x = Math.sqrt((a * a) + (b * b))
+    transform.scale.y = Math.sqrt((c * c) + (d * d))
 
-    position = new Vec2(this.tx, this.ty)
+    // next set position
+    transform.position.x = this.tx
+    transform.position.y = this.ty
 
-    return {
-      position,
-      scale,
-      skew,
-      rotation,
-    }
+    return transform
   }
 
   transformPoint (v: Vec2): Vec2 {

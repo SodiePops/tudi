@@ -20,24 +20,32 @@ export class Transform extends Component {
   private sscale: Vec2 = new Vec2(1, 1)
   private rrotation: number = 0
   // TO DO: Implement these. The math for them is confusing
-  // skew: Vec2 = new Vec2(0, 0)
-  // pivot: Vec2 = new Vec2(0, 0)
+  private sskew: Vec2 = new Vec2(0, 0)
+  private ppivot: Vec2 = new Vec2(0, 0)
 
-  constructor ({ position, scale, rotation }: TransformInitalizer) {
+  constructor ({ position, scale, rotation, skew, pivot }: TransformInitalizer) {
     super()
     this.pposition = position || new Vec2(0, 0)
     this.sscale = scale || new Vec2(1, 1)
     this.rrotation = rotation || 0
+    this.sskew = skew || new Vec2(0, 0)
+    this.ppivot = pivot || new Vec2(0, 0)
   }
 
   private updateLocalTransform (): void {
-    if (!this.isDirty) { return }
-    this.localTransform = Matrix.MULTIPLY(
-      Matrix.TRANSLATE(this.pposition),
-      Matrix.ROTATE(this.rrotation),
-      Matrix.SCALE(this.sscale),
-    )
-    this.isDirty = false
+    const lt: Matrix = this.localTransform
+    const cx: number = Math.cos(this.rrotation + this.sskew.y)
+    const sx: number = Math.sin(this.rrotation + this.sskew.y)
+    const cy: number = -Math.sin(this.rrotation - this.sskew.x)
+    const sy: number = Math.cos(this.rrotation - this.sskew.x)
+
+    lt.a = cx * this.sscale.x
+    lt.b = sx * this.sscale.x
+    lt.c = cy * this.sscale.y
+    lt.d = sy * this.sscale.y
+
+    lt.tx = this.pposition.x - ((this.ppivot.x * lt.a) + (this.ppivot.y * lt.c))
+    lt.ty = this.pposition.y - ((this.ppivot.x * lt.b) + (this.ppivot.y * lt.d))
   }
 
   updateTransform (parentTransform?: Transform): void {
@@ -47,8 +55,15 @@ export class Transform extends Component {
       this.worldTransform = this.localTransform
     } else {
       const lt: Matrix = this.localTransform
+      const wt: Matrix = this.worldTransform
       const pt: Matrix = parentTransform.worldTransform
-      this.worldTransform = Matrix.MULTIPLY(lt, pt)
+
+      wt.a = (lt.a * pt.a) + (lt.b * pt.c)
+      wt.b = (lt.a * pt.b) + (lt.b * pt.d)
+      wt.c = (lt.c * pt.a) + (lt.d * pt.c)
+      wt.d = (lt.c * pt.b) + (lt.d * pt.d)
+      wt.tx = (lt.tx * pt.a) + (lt.ty * pt.c) + pt.tx
+      wt.ty = (lt.tx * pt.b) + (lt.ty * pt.d) + pt.ty
     }
   }
 
@@ -89,4 +104,6 @@ export interface TransformInitalizer {
   position?: Vec2,
   scale?: Vec2,
   rotation?: number,
+  skew?: Vec2,
+  pivot?: Vec2,
 }
