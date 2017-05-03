@@ -9,12 +9,12 @@ import { Vec2 } from './Vec2'
  * @class Matrix
  */
 export class Matrix {
-  a: number = 1
-  b: number = 0
-  tx: number = 0
-  c: number = 0
-  d: number = 1
-  ty: number = 0
+  a = 1
+  b = 0
+  tx = 0
+  c = 0
+  d = 1
+  ty = 0
 
   constructor (a: number, b: number, tx: number,
                c: number, d: number, ty: number) {
@@ -71,11 +71,11 @@ export class Matrix {
         transform.skew.y = skewY
     }
 
-    // next set scale
+    // Next set scale
     transform.scale.x = Math.sqrt((a * a) + (b * b))
     transform.scale.y = Math.sqrt((c * c) + (d * d))
 
-    // next set position
+    // Next set position
     transform.position.x = this.tx
     transform.position.y = this.ty
 

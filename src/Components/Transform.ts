@@ -10,16 +10,16 @@ export class Transform extends Component {
   // NOTE: A few potential optimizations could be made here
   // - Cache values of rotation matrix because sin/cos is expensive
   // - Cache values of _every_ matrix because why not
-  name: string = 'transform'
+  name = 'transform'
   worldTransform: Matrix = Matrix.IDENTITY() // Transformation matrix relative to world
   localTransform: Matrix = Matrix.IDENTITY() // Transformation matrix relative to parent
 
-  private isDirty: boolean = true
+  private isDirty = true
 
   private pposition: Vec2 = new Vec2(0, 0)
   private sscale: Vec2 = new Vec2(1, 1)
-  private rrotation: number = 0
-  // TO DO: Implement these. The math for them is confusing
+  private rrotation = 0
+  // TODO: Implement these. The math for them is confusing
   private sskew: Vec2 = new Vec2(0, 0)
   private ppivot: Vec2 = new Vec2(0, 0)
 
@@ -77,9 +77,9 @@ export class Transform extends Component {
     this.updateTransform(pt)
   }
 
-  //------------
+  // -----------
   // ACCESSORS |
-  //------------
+  // -----------
   get worldPosition (): Vec2 { return new Vec2(this.worldTransform.tx, this.worldTransform.ty) }
   get position (): Vec2 { return this.pposition }
   set position (p: Vec2) {

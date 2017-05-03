@@ -11,9 +11,9 @@
     "no-unnecessary-qualifier": false,
     "no-unsafe-any": false,
     "prefer-function-over-method": false,
-    "prefer-method-signature": true,
+    "prefer-method-signature": false,
     "strict-type-predicates": true,
-    "adjacent-overload-signatures": false,
+    "adjacent-overload-signatures": true,
     "align": [
       false
     ],
@@ -26,7 +26,8 @@
     "callable-types": true,
     "class-name": true,
     "comment-format": [
-      false
+      true,
+      "check-space"
     ],
     "completed-docs": [
       false
@@ -35,7 +36,7 @@
     "cyclomatic-complexity": [
       false
     ],
-    "eofline": false,
+    "eofline": true,
     "export-name": true,
     "file-header": [
       false
@@ -94,7 +95,8 @@
     "no-bitwise": false,
     "no-conditional-assignment": true,
     "no-consecutive-blank-lines": [
-      true
+      true,
+      2
     ],
     "no-console": [
       true,
@@ -135,7 +137,8 @@
     ],
     "no-increment-decrement": false,
     "no-inferrable-types": [
-      false
+      true,
+      "ignore-params"
     ],
     "no-inferred-empty-object-type": false,
     "no-inner-html": true,
@@ -146,7 +149,7 @@
     "no-magic-numbers": false,
     "no-mergeable-namespace": false,
     "no-missing-visibility-modifiers": false,
-    "no-multiline-string": true,
+    "no-multiline-string": false,
     "no-multiple-var-decl": true,
     "no-namespace": false,
     "no-null-keyword": false,
@@ -165,7 +168,7 @@
     "no-string-based-set-timeout": true,
     "no-string-literal": true,
     "no-string-throw": true,
-    "no-suspicious-comment": true,
+    "no-suspicious-comment": false,
     "no-switch-case-fall-through": true,
     "no-trailing-whitespace": true,
     "no-typeof-undefined": true,
@@ -252,14 +255,14 @@
       "allow-null-check"
     ],
     "typedef": [
-      true,
-      "call-signature",
+      false
+      // "call-signature",
       // "arrow-call-signature",
-      "parameter",
-      "arrow-parameter",
-      "property-declaration",
-      "variable-declaration",
-      "member-variable-declaration"
+      // "parameter",
+      // "arrow-parameter",
+      // "property-declaration",
+      // "variable-declaration",
+      // "member-variable-declaration"
       // "object-destructuring",
       // "array-destructuring"
     ],
@@ -297,6 +300,6 @@
     ],
     // "no-useless-files": true,
     "semicolon": [true, "never"],
-    "quotemark": [true, "single", "jsx-double"]
+    "quotemark": [true, "single", "jsx-double", "avoid-escape"]
   }
 }
