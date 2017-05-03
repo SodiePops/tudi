@@ -7,45 +7,41 @@ import { Vec2, Matrix } from '../Math'
  * @class Transform
  */
 export class Transform extends Component {
-  // NOTE: A few potential optimizations could be made here
+  // NOTE: A potential optimization could be made here
   // - Cache values of rotation matrix because sin/cos is expensive
-  // - Cache values of _every_ matrix because why not
   name = 'transform'
   worldTransform: Matrix = Matrix.IDENTITY() // Transformation matrix relative to world
   localTransform: Matrix = Matrix.IDENTITY() // Transformation matrix relative to parent
 
-  private isDirty = true
-
-  private pposition: Vec2 = new Vec2(0, 0)
-  private sscale: Vec2 = new Vec2(1, 1)
-  private rrotation = 0
-  // TODO: Implement these. The math for them is confusing
-  private sskew: Vec2 = new Vec2(0, 0)
-  private ppivot: Vec2 = new Vec2(0, 0)
+  position: Vec2 = new Vec2(0, 0)
+  scale: Vec2 = new Vec2(1, 1)
+  rotation = 0
+  skew: Vec2 = new Vec2(0, 0)
+  pivot: Vec2 = new Vec2(0, 0)
 
   constructor ({ position, scale, rotation, skew, pivot }: TransformInitalizer) {
     super()
-    this.pposition = position || new Vec2(0, 0)
-    this.sscale = scale || new Vec2(1, 1)
-    this.rrotation = rotation || 0
-    this.sskew = skew || new Vec2(0, 0)
-    this.ppivot = pivot || new Vec2(0, 0)
+    this.position = position || new Vec2(0, 0)
+    this.scale = scale || new Vec2(1, 1)
+    this.rotation = rotation || 0
+    this.skew = skew || new Vec2(0, 0)
+    this.pivot = pivot || new Vec2(0, 0)
   }
 
   private updateLocalTransform (): void {
     const lt: Matrix = this.localTransform
-    const cx: number = Math.cos(this.rrotation + this.sskew.y)
-    const sx: number = Math.sin(this.rrotation + this.sskew.y)
-    const cy: number = -Math.sin(this.rrotation - this.sskew.x)
-    const sy: number = Math.cos(this.rrotation - this.sskew.x)
+    const cx: number = Math.cos(this.rotation + this.skew.y)
+    const sx: number = Math.sin(this.rotation + this.skew.y)
+    const cy: number = -Math.sin(this.rotation - this.skew.x)
+    const sy: number = Math.cos(this.rotation - this.skew.x)
 
-    lt.a = cx * this.sscale.x
-    lt.b = sx * this.sscale.x
-    lt.c = cy * this.sscale.y
-    lt.d = sy * this.sscale.y
+    lt.a = cx * this.scale.x
+    lt.b = sx * this.scale.x
+    lt.c = cy * this.scale.y
+    lt.d = sy * this.scale.y
 
-    lt.tx = this.pposition.x - ((this.ppivot.x * lt.a) + (this.ppivot.y * lt.c))
-    lt.ty = this.pposition.y - ((this.ppivot.x * lt.b) + (this.ppivot.y * lt.d))
+    lt.tx = this.position.x - ((this.pivot.x * lt.a) + (this.pivot.y * lt.c))
+    lt.ty = this.position.y - ((this.pivot.x * lt.b) + (this.pivot.y * lt.d))
   }
 
   updateTransform (parentTransform?: Transform): void {
@@ -75,28 +71,6 @@ export class Transform extends Component {
   update (): void {
     const pt: Transform = this.entity.parent && this.entity.parent.transform
     this.updateTransform(pt)
-  }
-
-  // -----------
-  // ACCESSORS |
-  // -----------
-  get worldPosition (): Vec2 { return new Vec2(this.worldTransform.tx, this.worldTransform.ty) }
-  get position (): Vec2 { return this.pposition }
-  set position (p: Vec2) {
-    this.isDirty = true
-    this.pposition = p
-  }
-
-  get scale (): Vec2 { return this.sscale }
-  set scale (s: Vec2) {
-    this.isDirty = true
-    this.sscale = s
-  }
-
-  get rotation (): number { return this.rrotation }
-  set rotation (r: number) {
-    this.isDirty = true
-    this.rrotation = r
   }
 }
 
