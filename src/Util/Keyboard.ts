@@ -8,7 +8,8 @@ const onKeyDown = (event: KeyboardEvent): void => {
 }
 
 const onKeyUp = (event: KeyboardEvent): void => {
-  pressed[event.keyCode] = false
+  // pressed[event.keyCode] = false
+  delete pressed[event.keyCode]
 }
 
 window.addEventListener('keyup', onKeyUp, false)
