@@ -7,7 +7,7 @@ import { Component } from './Component'
  * @extends {Component}
  */
 export class SpriteComponent extends Component {
-  name: string = 'sprite'
+  name = 'sprite'
   sprite: PIXI.Sprite
 
   constructor (public spriteName: string) {
@@ -24,8 +24,8 @@ export class SpriteComponent extends Component {
     }
   }
 
-  update (dt: number): void {
-    // TODO
-    dt++
+  update (): void {
+    const t = this.entity.transform.worldTransform.decompose()
+    this.sprite.setTransform(t.position.x, t.position.y, t.scale.x, t.scale.y, t.rotation, t.skew.x, t.skew.y)
   }
 }

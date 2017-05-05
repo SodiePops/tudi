@@ -9,4 +9,4 @@ export function loadResources (resources: string[]): Promise<{}> {
   })
 }
 
-export const foo: number = 4
+export const foo = 4
