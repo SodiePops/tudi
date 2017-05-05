@@ -48,6 +48,7 @@
   },
   "homepage": "https://github.com/SodiePops/tudi#readme",
   "devDependencies": {
+    "@types/howler": "^2.0.2",
     "@types/pixi.js": "^4.4.3",
     "husky": "^0.13.3",
     "rimraf": "^2.6.1",
@@ -64,6 +65,7 @@
     "typescript": "^2.2.2"
   },
   "dependencies": {
+    "howler": "^2.0.3",
     "pixi.js": "^4.5.0"
   }
 }

@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/howler@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/howler/-/howler-2.0.2.tgz#3cf145a14eee379cd11264e7a5623b51f9dfb659"
+
 "@types/pixi.js@^4.4.3":
   version "4.4.3"
   resolved "https://registry.yarnpkg.com/@types/pixi.js/-/pixi.js-4.4.3.tgz#df2ab73b64938a7242e3d1db547f057e03b8fa17"
@@ -555,6 +559,10 @@ hmac-drbg@^1.0.0:
     hash.js "^1.0.3"
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
+
+howler@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/howler/-/howler-2.0.3.tgz#a76ab5a37ae5cc1e4a5a0f3ce279ca2c72b5efc7"
 
 husky@^0.13.3:
   version "0.13.3"
