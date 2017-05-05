@@ -9,5 +9,5 @@ export function loadResources (resources: string[]): Promise<{}> {
   })
 }
 
-export const foo: number = 4
+export const foo = 4
 // "mp3", "opus", "ogg", "wav", "aac", "m4a", "mp4", "webm"

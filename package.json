@@ -19,7 +19,8 @@
     "build:cjs": "tsc",
     "build:all": "npm run build:umd && npm run build:esm && npm run build:cjs",
     "build": "npm run clean:all && npm run build:all",
-    "lint": "tslint --project ./tsconfig.json --type-check"
+    "lint": "tslint --project ./tsconfig.json --type-check",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -47,10 +48,19 @@
     "url": "https://github.com/SodiePops/tudi/issues"
   },
   "homepage": "https://github.com/SodiePops/tudi#readme",
+  "jest": {
+    "transform": {
+      ".ts": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
+    "moduleFileExtensions": ["ts", "js", "json"]
+  },
   "devDependencies": {
     "@types/howler": "^2.0.2",
+    "@types/jest": "^19.2.2",
     "@types/pixi.js": "^4.4.3",
     "husky": "^0.13.3",
+    "jest": "^19.0.2",
     "rimraf": "^2.6.1",
     "rollup": "^0.41.6",
     "rollup-plugin-commonjs": "^8.0.2",
@@ -59,6 +69,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-watch": "^3.2.2",
+    "ts-jest": "^19.0.14",
     "tslib": "^1.6.1",
     "tslint": "<5",
     "tslint-microsoft-contrib": "^4.0.1",
