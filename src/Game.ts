@@ -40,11 +40,10 @@ export default class Game {
     }
 
     let dt = 0
-    if (this.lastTimestamp < 0) {
-      this.lastTimestamp = timestamp
-    } else {
-      dt = timestamp - this.lastTimestamp
+    if (this.lastTimestamp > 0) {
+      dt = (timestamp - this.lastTimestamp) / 1000
     }
+    this.lastTimestamp = timestamp
 
     this.scene.update(dt)
     this.renderer.render(this.scene.stage)

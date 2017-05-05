@@ -19,7 +19,7 @@ export const isDown = (keyCode: number): boolean => {
   return pressed[keyCode]
 }
 
-export const KEYS: {[key: string]: number} = {
+export const KEYS = {
   A: 'A'.charCodeAt(0),
   B: 'B'.charCodeAt(0),
   C: 'C'.charCodeAt(0),
