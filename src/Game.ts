@@ -23,15 +23,15 @@ export default class Game {
     this.update = this.update.bind(this)
   }
 
-  start (scene?: Scene): Promise<void> {
+  async start (scene?: Scene): Promise<void> {
     this.scene = scene || this.scene
     this.isPlaying = true
-    return this.setup()
+    await this.setup()
   }
 
-  private setup (): Promise<void> {
-    return this.scene.setup()
-      .then(() => this.update())
+  private async setup (): Promise<void> {
+    await this.scene.setup()
+    this.update()
   }
 
   private update (timestamp: number = 0): void {

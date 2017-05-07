@@ -1,6 +1,12 @@
 import * as PIXI from 'pixi.js'
 import Entity from './Entity'
 import * as ResourceManager from './Util/ResourceManager'
+import * as AudioManager from './Util/AudioManager'
+
+export interface SceneResources {
+  images?: string[],
+  sounds?: AudioManager.SoundProperties[],
+}
 
 /**
  * A Scene is the root of a hierarchy of entities.
@@ -15,22 +21,22 @@ export default class Scene {
   stage: PIXI.Container
   entityCount: number
   entities: Entity[]
-  resources: string[]
+  resources: SceneResources
 
-  constructor(resources: string[], entities: Entity[]) {
+  constructor(resources: SceneResources, entities: Entity[]) {
     this.stage = new PIXI.Container()
     this.entities = entities
     this.resources = resources
   }
 
-  setup (): Promise<void> {
-    return ResourceManager.loadResources(this.resources)
-    .then(() => {
-      for (const entity of this.entities) {
-        entity.scene = this
-        entity.setup()
-      }
-    })
+  async setup (): Promise<void> {
+    await ResourceManager.loadResources(this.resources.images)
+    await AudioManager.loadSounds(this.resources.sounds)
+
+    for (const entity of this.entities) {
+      entity.scene = this
+      entity.setup()
+    }
   }
 
   update (dt: number): void {
