@@ -1,4 +1,3 @@
-import { Howl } from 'howler'
 import { Component } from './Component'
 import * as AudioManager from '../Util/AudioManager'
 
