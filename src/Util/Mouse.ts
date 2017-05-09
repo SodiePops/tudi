@@ -2,8 +2,8 @@
  * Mouse input module
  */
 const pressed: { [keyCode: number]: boolean } = {}
-export let mouseX: number = 0
-export let mouseY: number = 0
+export let mouseX = 0
+export let mouseY = 0
 
 const onMouseDown = (event: MouseEvent): void => {
   pressed[event.button] = true

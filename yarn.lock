@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@types/howler@^2.0.2":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@types/howler/-/howler-2.0.2.tgz#3cf145a14eee379cd11264e7a5623b51f9dfb659"
+
 "@types/jest@^19.2.2":
   version "19.2.2"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-19.2.2.tgz#71f428be2fa6eb9f15bb0abc3cade67905f94839"
@@ -1228,6 +1232,11 @@ hmac-drbg@^1.0.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.1"
 
+<<<<<<< HEAD
+howler@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/howler/-/howler-2.0.3.tgz#a76ab5a37ae5cc1e4a5a0f3ce279ca2c72b5efc7"
+=======
 hoek@2.x.x:
   version "2.16.3"
   resolved "https://registry.yarnpkg.com/hoek/-/hoek-2.16.3.tgz#20bb7403d3cea398e91dc4710a8ff1b8274a25ed"
@@ -1256,6 +1265,7 @@ http-signature@~1.1.0:
     assert-plus "^0.2.0"
     jsprim "^1.2.2"
     sshpk "^1.7.0"
+>>>>>>> master
 
 husky@^0.13.3:
   version "0.13.3"
