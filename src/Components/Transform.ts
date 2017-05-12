@@ -19,6 +19,22 @@ export class Transform extends Component {
   skew: Vec2 = new Vec2(0, 0)
   pivot: Vec2 = new Vec2(0, 0)
 
+  get forward (): Vec2 {
+    return new Vec2(Math.cos(this.rotation), Math.sin(this.rotation))
+  }
+
+  get backward (): Vec2 {
+    return new Vec2(Math.cos(this.rotation + Math.PI), Math.sin(this.rotation + Math.PI))
+  }
+
+  get left (): Vec2 {
+    return new Vec2(Math.cos(this.rotation + Math.PI / 2), Math.sin(this.rotation + Math.PI / 2))
+  }
+
+  get right (): Vec2 {
+    return new Vec2(Math.cos(this.rotation - Math.PI / 2), Math.sin(this.rotation - Math.PI / 2))
+  }
+
   constructor ({ position, scale, rotation, skew, pivot }: TransformInitalizer) {
     super()
     this.position = position || new Vec2(0, 0)

@@ -20,20 +20,37 @@ export interface SceneResources {
 export default class Scene {
   stage: PIXI.Container
   entityCount: number
-  entities: Entity[]
+  entities: { [name: string]: Entity } = {}
   resources: SceneResources
 
   constructor(resources: SceneResources, entities: Entity[]) {
     this.stage = new PIXI.Container()
-    this.entities = entities
+    for (const entity of entities) {
+      this.entities[entity.id] = entity
+    }
     this.resources = resources
+  }
+
+  addEntity (e: Entity): void {
+    this.entities[e.id] = e
+    e.scene = this
+    e.setup()
+  }
+
+  removeEntity (id: string): Entity | void {
+    if (this.entities[id]) {
+      this.entityCount--
+      const entity = this.entities[id]
+      delete this.entities[id]
+      return entity
+    }
   }
 
   async setup (): Promise<void> {
     await ResourceManager.loadResources(this.resources.images)
     await AudioManager.loadSounds(this.resources.sounds)
 
-    for (const entity of this.entities) {
+    for (const entity of Object.values(this.entities)) {
       entity.scene = this
       entity.setup()
     }
@@ -41,7 +58,7 @@ export default class Scene {
 
   update (dt: number): void {
     // Call update on every entity in entities
-    for (const entity of this.entities) {
+    for (const entity of Object.values(this.entities)) {
       entity.update(dt)
     }
   }

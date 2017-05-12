@@ -38,6 +38,20 @@ export default class Entity {
     }
   }
 
+  destroy (): void {
+    // this.transform.setup()
+    for (const component of Object.values(this.components)) {
+      const c = <any>component
+      if (c.destroy) c.destroy()
+    }
+    for (const child of Object.values(this.children)) {
+      child.destroy()
+    }
+
+    if (this.parent) this.parent.removeChild(this.id)
+    if (this.scene) this.scene.removeEntity(this.id)
+  }
+
   /**
    * Handling Children
    */
@@ -47,6 +61,26 @@ export default class Entity {
     child.scene = this.scene
     child.parent = this
     child.setup()
+  }
+
+  removeChild (id: string): Entity | void {
+    if (this.children[id]) {
+      const child = this.children[id]
+      delete this.children[id]
+      return child
+    }
+  }
+
+  getChild (idOrName: string): Entity | void {
+    if (this.children[idOrName]) {
+      return this.children[idOrName]
+    } else {
+      for (const child of Object.values(this.children)) {
+        if (child.name === idOrName) {
+          return child
+        }
+      }
+    }
   }
 
   /**

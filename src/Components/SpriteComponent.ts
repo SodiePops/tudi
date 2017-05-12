@@ -18,6 +18,8 @@ export class SpriteComponent extends Component {
     if (PIXI.loader.resources[this.spriteName]) {
       const texture: PIXI.Texture = PIXI.loader.resources[this.spriteName].texture
       this.sprite = new PIXI.Sprite(texture)
+      const t = this.entity.transform.worldTransform.decompose()
+      this.sprite.setTransform(t.position.x, t.position.y, t.scale.x, t.scale.y, t.rotation, t.skew.x, t.skew.y)
       this.entity.scene.stage.addChild(this.sprite)
     } else {
       throw new Error(`Sprite resource ${this.spriteName} has not been loaded!`)
@@ -27,5 +29,9 @@ export class SpriteComponent extends Component {
   update (): void {
     const t = this.entity.transform.worldTransform.decompose()
     this.sprite.setTransform(t.position.x, t.position.y, t.scale.x, t.scale.y, t.rotation, t.skew.x, t.skew.y)
+  }
+
+  destroy (): void {
+    this.entity.scene.stage.removeChild(this.sprite)
   }
 }
