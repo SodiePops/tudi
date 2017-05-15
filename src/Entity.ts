@@ -39,7 +39,6 @@ export default class Entity {
   }
 
   destroy (): void {
-    // this.transform.setup()
     for (const component of Object.values(this.components)) {
       const c = <any>component
       if (c.destroy) c.destroy()
@@ -125,7 +124,8 @@ export default class Entity {
   update (dt: number): void {
     this.transform.update()
     for (const component of Object.values(this.components)) {
-      component.update(dt)
+      const c = <any>component
+      if (c.update) c.update(dt)
     }
     for (const child of Object.values(this.children)) {
       child.update(dt)

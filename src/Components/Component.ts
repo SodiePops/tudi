@@ -14,5 +14,4 @@ export abstract class Component {
   entity: Entity
 
   abstract setup (): void
-  abstract update (dt: number): void
 }

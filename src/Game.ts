@@ -1,5 +1,6 @@
 import * as PIXI from 'pixi.js'
 import Scene from './Scene'
+import * as Update from './Util/Update'
 
 /**
  * The Game handles operation of the entire game (duh).
@@ -12,15 +13,13 @@ import Scene from './Scene'
 export default class Game {
   private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
   private scene: Scene
-  private lastTimestamp = -1
+  // private lastTimestamp = -1
   private isPlaying = false
 
   constructor (width: number, height: number, scene?: Scene) {
     this.renderer = PIXI.autoDetectRenderer(width, height)
     this.scene = scene ? scene : new Scene([], [])
     document.body.appendChild(this.renderer.view)
-
-    this.update = this.update.bind(this)
   }
 
   async start (scene?: Scene): Promise<void> {
@@ -31,25 +30,17 @@ export default class Game {
 
   private async setup (): Promise<void> {
     await this.scene.setup()
-    this.update()
+
+    Update.subscribe(({ deltaTime }) => {
+      this.scene.update(deltaTime)
+      this.renderer.render(this.scene.stage)
+    })
+
+    return
   }
 
-  private update (timestamp: number = 0): void {
-    if (this.isPlaying) {
-      requestAnimationFrame(this.update)
-    }
-
-    let dt = 0
-    if (this.lastTimestamp > 0) {
-      dt = (timestamp - this.lastTimestamp) / 1000
-    }
-    this.lastTimestamp = timestamp
-
-    this.scene.update(dt)
-    this.renderer.render(this.scene.stage)
-  }
-
-  stop (): void {
-    this.isPlaying = false
-  }
+  // private update (): void {
+  //   // this.scene.update(dt)
+  //   this.renderer.render(this.scene.stage)
+  // }
 }
