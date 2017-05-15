@@ -1,7 +1,12 @@
+import * as most from 'most'
+
 /**
  * Keyboard input module
  */
 const pressed: { [keyCode: number]: boolean } = {}
+
+export const keydown$ = most.fromEvent<KeyboardEvent>('keydown', window, false)
+export const keyup$ = most.fromEvent<KeyboardEvent>('keyup', window, false)
 
 const onKeyDown = (event: KeyboardEvent): void => {
   pressed[event.keyCode] = true

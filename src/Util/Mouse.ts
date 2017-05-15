@@ -1,9 +1,15 @@
+import * as most from 'most'
+
 /**
  * Mouse input module
  */
 const pressed: { [keyCode: number]: boolean } = {}
 export let mouseX = 0
 export let mouseY = 0
+
+export const mousedown$ = most.fromEvent('mousedown', window, false)
+export const mouseup$ = most.fromEvent('mouseup', window, false)
+export const mousemove$ = most.fromEvent('mousemove', window, false)
 
 const onMouseDown = (event: MouseEvent): void => {
   pressed[event.button] = true
