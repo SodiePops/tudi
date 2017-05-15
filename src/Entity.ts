@@ -4,6 +4,7 @@ import {
   TransformInitalizer,
 } from './Components'
 import Scene from './Scene'
+import { Subject, async } from 'most-subject'
 
 /**
  * An Entity exists in the game world and has
@@ -19,6 +20,7 @@ export default class Entity {
   scene: Scene
   transform: Transform
   parent: Entity = null
+  destroy$: Subject<boolean>
   private components: { [name: string]: Component } = {}
   private children: { [name: string]: Entity } = {}
 
@@ -36,19 +38,6 @@ export default class Entity {
         this.children[child.id] = child
       }
     }
-  }
-
-  destroy (): void {
-    for (const component of Object.values(this.components)) {
-      const c = <any>component
-      if (c.destroy) c.destroy()
-    }
-    for (const child of Object.values(this.children)) {
-      child.destroy()
-    }
-
-    if (this.parent) this.parent.removeChild(this.id)
-    if (this.scene) this.scene.removeEntity(this.id)
   }
 
   /**
@@ -107,6 +96,10 @@ export default class Entity {
   }
 
   setup (): void {
+    this.destroy$ = this.parent
+      ? <Subject<boolean>>this.parent.destroy$.map(e => e)
+      : async<boolean>()
+
     this.scene.entityCount++
     this.transform.entity = this
     this.transform.setup()
@@ -130,6 +123,13 @@ export default class Entity {
     for (const child of Object.values(this.children)) {
       child.update(dt)
     }
+  }
+
+  destroy (): void {
+    this.destroy$.next(true).complete(true)
+
+    if (this.parent) this.parent.removeChild(this.id)
+    if (this.scene) this.scene.removeEntity(this.id)
   }
 
   /**

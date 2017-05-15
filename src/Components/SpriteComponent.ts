@@ -24,6 +24,8 @@ export class SpriteComponent extends Component {
     } else {
       throw new Error(`Sprite resource ${this.spriteName} has not been loaded!`)
     }
+
+    this.entity.destroy$.observe(this.destroy.bind(this))
   }
 
   update (): void {
