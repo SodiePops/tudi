@@ -13,7 +13,6 @@ import * as Update from './Util/Update'
 export default class Game {
   private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
   private scene: Scene
-  // private lastTimestamp = -1
   private isPlaying = false
 
   constructor (width: number, height: number, scene?: Scene) {
@@ -31,16 +30,10 @@ export default class Game {
   private async setup (): Promise<void> {
     await this.scene.setup()
 
-    Update.subscribe(({ deltaTime }) => {
-      this.scene.update(deltaTime)
+    Update.subscribe(() => {
       this.renderer.render(this.scene.stage)
     })
 
     return
   }
-
-  // private update (): void {
-  //   // this.scene.update(dt)
-  //   this.renderer.render(this.scene.stage)
-  // }
 }

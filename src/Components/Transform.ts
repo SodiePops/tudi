@@ -82,6 +82,8 @@ export class Transform extends Component {
   setup (): void {
     const pt: Transform = this.entity.parent && this.entity.parent.transform
     this.updateTransform(pt)
+
+    this.entity.update$.observe(this.update.bind(this))
   }
 
   update (): void {

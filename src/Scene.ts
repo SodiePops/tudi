@@ -2,6 +2,8 @@ import * as PIXI from 'pixi.js'
 import Entity from './Entity'
 import * as ResourceManager from './Util/ResourceManager'
 import * as AudioManager from './Util/AudioManager'
+import * as Update from './Util/Update'
+import * as most from 'most'
 
 export interface SceneResources {
   images?: string[],
@@ -22,6 +24,7 @@ export default class Scene {
   entityCount: number
   entities: { [name: string]: Entity } = {}
   resources: SceneResources
+  update$: most.Stream<number>
 
   constructor(resources: SceneResources, entities: Entity[]) {
     this.stage = new PIXI.Container()
@@ -47,19 +50,13 @@ export default class Scene {
   }
 
   async setup (): Promise<void> {
+    this.update$ = Update.update$.map(evt => evt.deltaTime)
     await ResourceManager.loadResources(this.resources.images)
     await AudioManager.loadSounds(this.resources.sounds)
 
     for (const entity of Object.values(this.entities)) {
       entity.scene = this
       entity.setup()
-    }
-  }
-
-  update (dt: number): void {
-    // Call update on every entity in entities
-    for (const entity of Object.values(this.entities)) {
-      entity.update(dt)
     }
   }
 }

@@ -4,7 +4,8 @@ import {
   TransformInitalizer,
 } from './Components'
 import Scene from './Scene'
-import { Subject, async } from 'most-subject'
+import { Subject, async as _async } from 'most-subject' // Why would they use a keyword??
+import * as most from 'most'
 
 /**
  * An Entity exists in the game world and has
@@ -20,8 +21,11 @@ export default class Entity {
   scene: Scene
   transform: Transform
   parent: Entity = null
+  // The reason destroy$ is a Subject and not a Stream is so we can
+  // imperatively push a destroy event on demand
   destroy$: Subject<boolean>
-  private components: { [name: string]: Component } = {}
+  update$: most.Stream<number>
+  readonly components: { [name: string]: Component } = {}
   private children: { [name: string]: Entity } = {}
 
   constructor (name: string, transform: TransformInitalizer, components?: Component[], children?: Entity[]) {
@@ -96,9 +100,14 @@ export default class Entity {
   }
 
   setup (): void {
-    this.destroy$ = this.parent
-      ? <Subject<boolean>>this.parent.destroy$.map(e => e)
-      : async<boolean>()
+    if (this.parent) {
+      // Clone the parent entity's destroy stream
+      this.destroy$ = <Subject<boolean>>this.parent.destroy$.map(e => e)
+      this.update$ = this.parent.update$.takeUntil(this.destroy$)
+    } else {
+      this.destroy$ = _async<boolean>()
+      this.update$ = this.scene.update$.takeUntil(this.destroy$)
+    }
 
     this.scene.entityCount++
     this.transform.entity = this
@@ -111,17 +120,6 @@ export default class Entity {
       child.scene = this.scene
       child.parent = this
       child.setup()
-    }
-  }
-
-  update (dt: number): void {
-    this.transform.update()
-    for (const component of Object.values(this.components)) {
-      const c = <any>component
-      if (c.update) c.update(dt)
-    }
-    for (const child of Object.values(this.children)) {
-      child.update(dt)
     }
   }
 
