@@ -3,20 +3,49 @@ import * as most from 'most'
 /**
  * Mouse input module
  */
-const pressed: { [keyCode: number]: boolean } = {}
+
+export interface ButtonMap { [button: number]: boolean }
+
+
+// ----------
+// Stream API
+// ----------
+
+export const mousedown$ = most.fromEvent('mousedown', window, false).skipRepeats()
+export const mouseup$ = most.fromEvent('mouseup', window, false).skipRepeats()
+export const mousemove$ = most.fromEvent('mousemove', window, false).skipRepeats()
+
+export const mouse$ = most.merge(mousedown$, mouseup$)
+  .scan((buttons: ButtonMap, evt: MouseEvent) => {
+    const newButtons = { ...buttons }
+    if (evt.type === 'mousedown') {
+      newButtons[evt.button] = true
+    } else {
+      delete newButtons[evt.button]
+    }
+    return newButtons
+  }, {})
+
+
+// --------------
+// Imperative API
+// --------------
+
+const pressed: ButtonMap = {}
+
 export let mouseX = 0
 export let mouseY = 0
 
-export const mousedown$ = most.fromEvent('mousedown', window, false)
-export const mouseup$ = most.fromEvent('mouseup', window, false)
-export const mousemove$ = most.fromEvent('mousemove', window, false)
+export const isDown = (button: number): boolean => {
+  return pressed[button]
+}
+
 
 const onMouseDown = (event: MouseEvent): void => {
   pressed[event.button] = true
 }
 
 const onMouseUp = (event: MouseEvent): void => {
-  // pressed[event.button] = false
   delete pressed[event.button]
 }
 
@@ -29,11 +58,8 @@ window.addEventListener('mouseup', onMouseUp, false)
 window.addEventListener('mousedown', onMouseDown, false)
 window.addEventListener('mousemove', onMouseMove, false)
 
-export const isDown = (button: number): boolean => {
-  return pressed[button]
-}
 
-export const BUTTONS: {[key: string]: number} = {
+export const BUTTONS = {
   LEFT: 1,
   RIGHT: 2,
   MIDDLE: 4,
