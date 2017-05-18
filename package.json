@@ -1,6 +1,6 @@
 {
   "name": "tudi",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "A 2D game engine for Pixi.js.",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
