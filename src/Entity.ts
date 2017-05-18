@@ -4,6 +4,7 @@ import {
   TransformInitalizer,
 } from './Components'
 import Scene from './Scene'
+import ActionChannel from './Util/ActionChannel'
 import { Subject, async as _async } from 'most-subject' // Why would they use a keyword??
 import * as most from 'most'
 
@@ -25,6 +26,7 @@ export default class Entity {
   // imperatively push a destroy event on demand
   destroy$: Subject<boolean>
   update$: most.Stream<number>
+  actions: ActionChannel = new ActionChannel()
   readonly components: { [name: string]: Component } = {}
   private children: { [name: string]: Entity } = {}
 

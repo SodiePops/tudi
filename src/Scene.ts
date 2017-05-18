@@ -3,6 +3,7 @@ import Entity from './Entity'
 import * as ResourceManager from './Util/ResourceManager'
 import * as AudioManager from './Util/AudioManager'
 import * as Update from './Util/Update'
+import ActionChannel from './Util/ActionChannel'
 import * as most from 'most'
 
 export interface SceneResources {
@@ -15,9 +16,6 @@ export interface SceneResources {
  * It handles loading of assets and propagating of
  * events through the scene hierarchy. It could be
  * thought of as a "level".
- *
- * @export
- * @class Scene
  */
 export default class Scene {
   stage: PIXI.Container
@@ -25,6 +23,7 @@ export default class Scene {
   entities: { [name: string]: Entity } = {}
   resources: SceneResources
   update$: most.Stream<number>
+  actions: ActionChannel = new ActionChannel()
 
   constructor(resources: SceneResources, entities: Entity[]) {
     this.stage = new PIXI.Container()
