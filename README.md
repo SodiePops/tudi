@@ -13,6 +13,9 @@ See [this article][ts-libs] for a more detailed explanation.
 
 ---
 
+## Examples
+[Asteroids][asteroids] - [repo][asteroids-repo]
+
 ## Making a Game with tudi
 
 ### Project Structure
@@ -37,3 +40,5 @@ If a component is only used in a single entity, it is ok to put it inside the sa
 
 
 [ts-libs]: http://marcobotto.com/compiling-and-bundling-typescript-libraries-with-webpack/
+[asteroids]: https://github.com/SodiePops/asteroids-example/
+[asteroids-repo]: https://sodiepops.github.io/asteroids-example/
