@@ -11,8 +11,10 @@ export interface KeyMap { [keyCode: number]: boolean }
 // Stream API
 // ----------
 
-export const keydown$ = most.fromEvent<KeyboardEvent>('keydown', window, false).skipRepeats()
-export const keyup$ = most.fromEvent<KeyboardEvent>('keyup', window, false).skipRepeats()
+const keyEventEquals = (_: KeyboardEvent, e2: KeyboardEvent) => e2.repeat
+
+export const keydown$ = most.fromEvent<KeyboardEvent>('keydown', window, false).skipRepeatsWith(keyEventEquals)
+export const keyup$ = most.fromEvent<KeyboardEvent>('keyup', window, false).skipRepeatsWith(keyEventEquals)
 
 // Used to convert stream of key events into a stream of KeyMap objects
 const scanKeysToKeyMap = (keys: KeyMap, evt: KeyboardEvent): KeyMap => {
