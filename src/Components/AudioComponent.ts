@@ -27,6 +27,4 @@ export class AudioComponent extends Component {
       }
     }
   }
-
-  update (): void {/* DO NOTHING */}
 }

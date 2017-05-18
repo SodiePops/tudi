@@ -4,6 +4,9 @@ import {
   TransformInitalizer,
 } from './Components'
 import Scene from './Scene'
+import ActionChannel from './Util/ActionChannel'
+import { Subject, async as _async } from 'most-subject' // Why would they use a keyword??
+import * as most from 'most'
 
 /**
  * An Entity exists in the game world and has
@@ -19,7 +22,12 @@ export default class Entity {
   scene: Scene
   transform: Transform
   parent: Entity = null
-  private components: { [name: string]: Component } = {}
+  // The reason destroy$ is a Subject and not a Stream is so we can
+  // imperatively push a destroy event on demand
+  destroy$: Subject<boolean>
+  update$: most.Stream<number>
+  actions: ActionChannel = new ActionChannel()
+  readonly components: { [name: string]: Component } = {}
   private children: { [name: string]: Entity } = {}
 
   constructor (name: string, transform: TransformInitalizer, components?: Component[], children?: Entity[]) {
@@ -36,20 +44,6 @@ export default class Entity {
         this.children[child.id] = child
       }
     }
-  }
-
-  destroy (): void {
-    // this.transform.setup()
-    for (const component of Object.values(this.components)) {
-      const c = <any>component
-      if (c.destroy) c.destroy()
-    }
-    for (const child of Object.values(this.children)) {
-      child.destroy()
-    }
-
-    if (this.parent) this.parent.removeChild(this.id)
-    if (this.scene) this.scene.removeEntity(this.id)
   }
 
   /**
@@ -108,6 +102,15 @@ export default class Entity {
   }
 
   setup (): void {
+    if (this.parent) {
+      // Clone the parent entity's destroy stream
+      this.destroy$ = <Subject<boolean>>this.parent.destroy$.map(e => e)
+      this.update$ = this.parent.update$.takeUntil(this.destroy$)
+    } else {
+      this.destroy$ = _async<boolean>()
+      this.update$ = this.scene.update$.takeUntil(this.destroy$)
+    }
+
     this.scene.entityCount++
     this.transform.entity = this
     this.transform.setup()
@@ -122,14 +125,11 @@ export default class Entity {
     }
   }
 
-  update (dt: number): void {
-    this.transform.update()
-    for (const component of Object.values(this.components)) {
-      component.update(dt)
-    }
-    for (const child of Object.values(this.children)) {
-      child.update(dt)
-    }
+  destroy (): void {
+    this.destroy$.next(true).complete(true)
+
+    if (this.parent) this.parent.removeChild(this.id)
+    if (this.scene) this.scene.removeEntity(this.id)
   }
 
   /**

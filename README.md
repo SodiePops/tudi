@@ -11,6 +11,29 @@ The build script outputs this project in three different ways:
 
 See [this article][ts-libs] for a more detailed explanation.
 
+---
+
+## Making a Game with tudi
+
+### Project Structure
+```
+src/
+├── Components/
+│   ├── Health.ts
+│   ├── Weapon.ts
+│   ├── PlayerController.ts
+│   └── EnemyController.ts
+├── Prefabs/
+│   ├── Player.ts
+│   └── Enemy.ts
+├── Scenes/
+│   ├── LevelOne.ts
+│   └── LevelTwo.ts
+└── index.ts
+```
+
+If a component is only used in a single entity, it is ok to put it inside the same file as the prefab.
+
 
 
 [ts-libs]: http://marcobotto.com/compiling-and-bundling-typescript-libraries-with-webpack/

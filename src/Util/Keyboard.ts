@@ -1,14 +1,57 @@
+import * as most from 'most'
+
 /**
  * Keyboard input module
  */
-const pressed: { [keyCode: number]: boolean } = {}
 
+export interface KeyMap { [keyCode: number]: boolean }
+
+
+// ----------
+// Stream API
+// ----------
+
+const keyEventEquals = (_: KeyboardEvent, e2: KeyboardEvent) => e2.repeat
+
+export const keydown$ = most.fromEvent<KeyboardEvent>('keydown', window, false).skipRepeatsWith(keyEventEquals)
+export const keyup$ = most.fromEvent<KeyboardEvent>('keyup', window, false).skipRepeatsWith(keyEventEquals)
+
+// Used to convert stream of key events into a stream of KeyMap objects
+const scanKeysToKeyMap = (keys: KeyMap, evt: KeyboardEvent): KeyMap => {
+  const newKeys = { ...keys }
+  if (evt.type === 'keydown') {
+    newKeys[evt.keyCode] = true
+  } else {
+    delete newKeys[evt.keyCode]
+  }
+  return newKeys
+}
+
+export const keyboard$ = most.merge(keydown$, keyup$)
+  .scan(scanKeysToKeyMap, {})
+
+/**
+ * Creates a stream similar to `Keyboard.keyboard$` but only
+ * emits events for given keys
+ */
+export const createInputStream = (keys: Set<number>): most.Stream<KeyMap> => {
+  const keyFilter = (evt: KeyboardEvent) => keys.has(evt.keyCode)
+
+  return most.merge(keydown$, keyup$)
+    .filter(keyFilter)
+    .scan(scanKeysToKeyMap, {})
+}
+
+// --------------
+// Imperative API
+// --------------
+
+const pressed: KeyMap = {}
 const onKeyDown = (event: KeyboardEvent): void => {
   pressed[event.keyCode] = true
 }
 
 const onKeyUp = (event: KeyboardEvent): void => {
-  // pressed[event.keyCode] = false
   delete pressed[event.keyCode]
 }
 
@@ -18,6 +61,7 @@ window.addEventListener('keydown', onKeyDown, false)
 export const isDown = (keyCode: number): boolean => {
   return pressed[keyCode]
 }
+
 
 export const KEYS = {
   A: 'A'.charCodeAt(0),
