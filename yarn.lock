@@ -26,6 +26,10 @@
   version "19.2.3"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-19.2.3.tgz#61748040e8589a891dfc2ec1d16a2dd74482980e"
 
+"@types/matter-js@^0.9.32":
+  version "0.9.32"
+  resolved "https://registry.yarnpkg.com/@types/matter-js/-/matter-js-0.9.32.tgz#81a3e7fd96230f4922982b082cfa265614733a69"
+
 "@types/pixi.js@^4.4.3":
   version "4.4.4"
   resolved "https://registry.yarnpkg.com/@types/pixi.js/-/pixi.js-4.4.4.tgz#d6a3bdbdcd3719c99934215a6c6ad26315b9fb78"
@@ -2153,6 +2157,10 @@ makeerror@1.0.x:
 map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
+
+matter-js@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/matter-js/-/matter-js-0.12.0.tgz#dcb02d04326c47746c63a3772d1475753d72fe1e"
 
 meow@^3.3.0:
   version "3.7.0"

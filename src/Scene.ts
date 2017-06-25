@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import * as Matter from 'matter-js'
 import Entity from './Entity'
 import * as ResourceManager from './Util/ResourceManager'
 import * as AudioManager from './Util/AudioManager'
@@ -24,6 +25,7 @@ export default class Scene {
   resources: SceneResources
   update$: most.Stream<number>
   actions: ActionChannel = new ActionChannel()
+  physicsEngine: Matter.Engine
 
   constructor(resources: SceneResources, entities: Entity[]) {
     this.stage = new PIXI.Container()
