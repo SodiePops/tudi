@@ -25,7 +25,7 @@ export class PhysicsBody extends Component {
       case 'rect':
         this.body = Matter.Bodies.rectangle(
           t.position.x, t.position.y,
-          this.bodyType.width, this.bodyType.height
+          this.bodyType.width, this.bodyType.height,
         )
         break
       case 'circle':
