@@ -13,9 +13,11 @@ import * as AudioManager from '../Util/AudioManager'
 export class AudioComponent extends Component {
   name = 'audio'
   sounds: {[key: string]: Howl} = {}
+  resourceNames: string[]
 
-  constructor (public resourceNames: string[]) {
+  constructor (resourceNames: string[]) {
     super()
+    this.resourceNames = resourceNames
   }
 
   setup (): void {

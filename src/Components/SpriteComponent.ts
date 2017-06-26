@@ -9,9 +9,11 @@ import { Component } from './Component'
 export class SpriteComponent extends Component {
   name = 'sprite'
   sprite: PIXI.Sprite
+  spriteName: string
 
-  constructor (public spriteName: string) {
+  constructor (spriteName: string) {
     super()
+    this.spriteName = spriteName
   }
 
   setup (): void {
