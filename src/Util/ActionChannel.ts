@@ -3,8 +3,8 @@ import { Subject, async as _async } from 'most-subject'
 
 export interface Action<T> {
   // tslint:disable-next-line
-  type: string,
-  payload?: T,
+  type: string
+  payload?: T
 }
 
 /**
@@ -13,17 +13,17 @@ export interface Action<T> {
 export default class ActionChannel {
   action$: Subject<Action<any>>
 
-  constructor () {
+  constructor() {
     this.action$ = _async<Action<any>>()
   }
 
-  channel<T> (actionType: string): Stream<T> {
+  channel<T>(actionType: string): Stream<T> {
     return this.action$
       .filter(action => action.type === actionType)
       .map<T>(action => action.payload)
   }
 
-  push (value: Action<any>): Subject<Action<any>> {
+  push(value: Action<any>): Subject<Action<any>> {
     return this.action$.next(value)
   }
 }

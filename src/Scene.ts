@@ -7,8 +7,8 @@ import ActionChannel from './Util/ActionChannel'
 import * as most from 'most'
 
 export interface SceneResources {
-  images?: string[],
-  sounds?: AudioManager.SoundProperties[],
+  images?: string[]
+  sounds?: AudioManager.SoundProperties[]
 }
 
 /**
@@ -33,13 +33,13 @@ export default class Scene {
     this.resources = resources
   }
 
-  addEntity (e: Entity): void {
+  addEntity(e: Entity): void {
     this.entities[e.id] = e
     e.scene = this
     e.setup()
   }
 
-  removeEntity (id: string): Entity | void {
+  removeEntity(id: string): Entity | void {
     if (this.entities[id]) {
       this.entityCount--
       const entity = this.entities[id]
@@ -48,7 +48,7 @@ export default class Scene {
     }
   }
 
-  async setup (): Promise<void> {
+  async setup(): Promise<void> {
     this.update$ = Update.update$.map(evt => evt.deltaTime)
     await ResourceManager.loadResources(this.resources.images)
     await AudioManager.loadSounds(this.resources.sounds)

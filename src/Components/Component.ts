@@ -13,5 +13,5 @@ export abstract class Component {
   abstract name: string
   entity: Entity
 
-  abstract setup (): void
+  abstract setup(): void
 }

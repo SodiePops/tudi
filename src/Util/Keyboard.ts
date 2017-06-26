@@ -6,15 +6,18 @@ import * as most from 'most'
 
 export interface KeyMap { [keyCode: number]: boolean }
 
-
 // ----------
 // Stream API
 // ----------
 
 const keyEventEquals = (_: KeyboardEvent, e2: KeyboardEvent) => e2.repeat
 
-export const keydown$ = most.fromEvent<KeyboardEvent>('keydown', window, false).skipRepeatsWith(keyEventEquals)
-export const keyup$ = most.fromEvent<KeyboardEvent>('keyup', window, false).skipRepeatsWith(keyEventEquals)
+export const keydown$ = most
+  .fromEvent<KeyboardEvent>('keydown', window, false)
+  .skipRepeatsWith(keyEventEquals)
+export const keyup$ = most
+  .fromEvent<KeyboardEvent>('keyup', window, false)
+  .skipRepeatsWith(keyEventEquals)
 
 // Used to convert stream of key events into a stream of KeyMap objects
 const scanKeysToKeyMap = (keys: KeyMap, evt: KeyboardEvent): KeyMap => {
@@ -27,8 +30,7 @@ const scanKeysToKeyMap = (keys: KeyMap, evt: KeyboardEvent): KeyMap => {
   return newKeys
 }
 
-export const keyboard$ = most.merge(keydown$, keyup$)
-  .scan(scanKeysToKeyMap, {})
+export const keyboard$ = most.merge(keydown$, keyup$).scan(scanKeysToKeyMap, {})
 
 /**
  * Creates a stream similar to `Keyboard.keyboard$` but only
@@ -37,7 +39,8 @@ export const keyboard$ = most.merge(keydown$, keyup$)
 export const createInputStream = (keys: Set<number>): most.Stream<KeyMap> => {
   const keyFilter = (evt: KeyboardEvent) => keys.has(evt.keyCode)
 
-  return most.merge(keydown$, keyup$)
+  return most
+    .merge(keydown$, keyup$)
     .filter(keyFilter)
     .scan(scanKeysToKeyMap, {})
 }
@@ -61,7 +64,6 @@ window.addEventListener('keydown', onKeyDown, false)
 export const isDown = (keyCode: number): boolean => {
   return pressed[keyCode]
 }
-
 
 export const KEYS = {
   A: 'A'.charCodeAt(0),

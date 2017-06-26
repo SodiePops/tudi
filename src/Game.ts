@@ -15,19 +15,19 @@ export default class Game {
   private scene: Scene
   private isPlaying = false
 
-  constructor (width: number, height: number, scene?: Scene) {
+  constructor(width: number, height: number, scene?: Scene) {
     this.renderer = PIXI.autoDetectRenderer(width, height)
     this.scene = scene ? scene : new Scene([], [])
     document.body.appendChild(this.renderer.view)
   }
 
-  async start (scene?: Scene): Promise<void> {
+  async start(scene?: Scene): Promise<void> {
     this.scene = scene || this.scene
     this.isPlaying = true
     await this.setup()
   }
 
-  private async setup (): Promise<void> {
+  private async setup(): Promise<void> {
     await this.scene.setup()
 
     Update.subscribe(() => {

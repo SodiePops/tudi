@@ -6,16 +6,20 @@ import * as most from 'most'
 
 export interface ButtonMap { [button: number]: boolean }
 
-
 // ----------
 // Stream API
 // ----------
 
-export const mousedown$ = most.fromEvent('mousedown', window, false).skipRepeats()
+export const mousedown$ = most
+  .fromEvent('mousedown', window, false)
+  .skipRepeats()
 export const mouseup$ = most.fromEvent('mouseup', window, false).skipRepeats()
-export const mousemove$ = most.fromEvent('mousemove', window, false).skipRepeats()
+export const mousemove$ = most
+  .fromEvent('mousemove', window, false)
+  .skipRepeats()
 
-export const mouse$ = most.merge(mousedown$, mouseup$)
+export const mouse$ = most
+  .merge(mousedown$, mouseup$)
   .scan((buttons: ButtonMap, evt: MouseEvent) => {
     const newButtons = { ...buttons }
     if (evt.type === 'mousedown') {
@@ -25,7 +29,6 @@ export const mouse$ = most.merge(mousedown$, mouseup$)
     }
     return newButtons
   }, {})
-
 
 // --------------
 // Imperative API
@@ -39,7 +42,6 @@ export let mouseY = 0
 export const isDown = (button: number): boolean => {
   return pressed[button]
 }
-
 
 const onMouseDown = (event: MouseEvent): void => {
   pressed[event.button] = true
@@ -57,7 +59,6 @@ const onMouseMove = (event: MouseEvent): void => {
 window.addEventListener('mouseup', onMouseUp, false)
 window.addEventListener('mousedown', onMouseDown, false)
 window.addEventListener('mousemove', onMouseMove, false)
-
 
 export const BUTTONS = {
   LEFT: 1,

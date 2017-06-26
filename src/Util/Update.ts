@@ -4,17 +4,17 @@ import { create } from '@most/create'
  * Creates a stream of update events using requestAnimationFrame
  */
 export interface UpdateEvent {
-  time: number,
-  deltaTime: number,
+  time: number
+  deltaTime: number
 }
 
 export type UpdateHandler = (event: UpdateEvent) => void
 
-export const update$ = create<UpdateEvent>((add) => {
+export const update$ = create<UpdateEvent>(add => {
   let rafHandler: number
   let lastTime = Date.now()
 
-  function update (time: number): void {
+  function update(time: number): void {
     rafHandler = requestAnimationFrame(update)
     // Push an event into the stream
     add({
