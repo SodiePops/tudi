@@ -1,9 +1,5 @@
 import { Vec2 } from '../../src/Math/Vec2'
 
-/**
- * Vec2 Tests
- */
-
 let v0: Vec2
 let v1: Vec2
 let v2: Vec2

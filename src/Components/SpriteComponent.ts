@@ -1,11 +1,6 @@
 import * as PIXI from 'pixi.js'
 import { Component } from './Component'
 
-/**
- * @export
- * @class SpriteComponent
- * @extends {Component}
- */
 export class SpriteComponent extends Component {
   name = 'sprite'
   sprite: PIXI.Sprite

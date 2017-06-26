@@ -1,8 +1,5 @@
 import { Howl } from 'howler'
 
-/**
- *
- */
 export type SoundProperties = IHowlProperties | string[] | string
 export const sounds: { [key: string]: Howl } = {}
 

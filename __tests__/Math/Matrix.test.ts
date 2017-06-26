@@ -1,9 +1,5 @@
 import { Matrix, Vec2 } from '../../src/Math'
 
-/**
- * Matrix Tests
- */
-
 let m0: Matrix
 
 describe('Matrix', () => {

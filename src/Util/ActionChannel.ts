@@ -2,7 +2,6 @@ import { Stream } from 'most'
 import { Subject, async as _async } from 'most-subject'
 
 export interface Action<T> {
-  // tslint:disable-next-line
   type: string
   payload?: T
 }
