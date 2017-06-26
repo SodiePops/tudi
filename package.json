@@ -7,8 +7,7 @@
   "jsnext:main": "lib/esm/index.js",
   "types": "lib/esm/index.d.ts",
   "scripts": {
-    "precommit": "npm run lint",
-    "prepush": "npm run lint",
+    "precommit": "lint-staged",
     "start": "tsc -m es6 --project config/tsconfig.json --outDir lib/esm -w",
     "clean": "rimraf ./lib",
     "build:umd": "webpack --config config/webpack.config.ts",
@@ -16,6 +15,7 @@
     "build:cjs": "tsc --project config/tsconfig.json",
     "build": "npm run clean && npm run build:umd && npm run build:esm && npm run build:cjs",
     "lint": "tslint --project config/tsconfig.json --type-check",
+    "prettier": "prettier --parser typescript --no-semi --single-quote --trailing-comma es5 --write \"src/**/*.ts\"",
     "test": "jest"
   },
   "repository": {
@@ -44,6 +44,13 @@
     "url": "https://github.com/SodiePops/tudi/issues"
   },
   "homepage": "https://github.com/SodiePops/tudi#readme",
+  "lint-staged": {
+    "src/**/*.ts": [
+      "tslint --project config/tsconfig.json --type-check",
+      "prettier --parser typescript --no-semi --single-quote --trailing-comma es5 --write",
+      "git add"
+    ]
+  },
   "jest": {
     "transform": {
       ".ts": "<rootDir>/node_modules/ts-jest/preprocessor.js"
@@ -65,11 +72,14 @@
     "directory-named-webpack-plugin": "^2.1.0",
     "husky": "^0.13.3",
     "jest": "^19.0.2",
+    "lint-staged": "^4.0.0",
+    "prettier": "^1.4.4",
     "rimraf": "^2.6.1",
     "source-map-loader": "^0.2.1",
     "ts-jest": "^19.0.14",
     "ts-node": "^3.1.0",
     "tslint": "^5.4.3",
+    "tslint-config-prettier": "^1.1.0",
     "typescript": "^2.2.2",
     "webpack": "^3.0.0"
   },
