@@ -16,8 +16,14 @@ export class Matrix {
   d = 1
   ty = 0
 
-  constructor (a: number, b: number, tx: number,
-               c: number, d: number, ty: number) {
+  constructor(
+    a: number,
+    b: number,
+    tx: number,
+    c: number,
+    d: number,
+    ty: number
+  ) {
     this.a = a
     this.b = b
     this.tx = tx
@@ -26,22 +32,27 @@ export class Matrix {
     this.ty = ty
   }
 
-  clone (): Matrix {
+  clone(): Matrix {
     return new Matrix(this.a, this.b, this.tx, this.c, this.d, this.ty)
   }
 
-  toArray (): number[] {
+  toArray(): number[] {
     return [this.a, this.b, this.tx, this.c, this.d, this.ty]
   }
 
-  toString (): string {
+  toString(): string {
     return `┌${this.a} ${this.b} ${this.tx}┐
 │${this.c} ${this.d} ${this.ty}│
 └0 0 1┘`
   }
 
-  decompose (): {position: Vec2, scale: Vec2, skew: Vec2, rotation: number} {
-    const transform: {position: Vec2, scale: Vec2, skew: Vec2, rotation: number} = {
+  decompose(): { position: Vec2; scale: Vec2; skew: Vec2; rotation: number } {
+    const transform: {
+      position: Vec2
+      scale: Vec2
+      skew: Vec2
+      rotation: number
+    } = {
       position: new Vec2(0, 0),
       scale: new Vec2(0, 0),
       skew: new Vec2(0, 0),
@@ -59,21 +70,21 @@ export class Matrix {
     const delta: number = Math.abs(skewX + skewY)
 
     if (delta < 0.00001) {
-        transform.rotation = skewY
+      transform.rotation = skewY
 
-        if (a < 0 && d >= 0) {
-            transform.rotation += (transform.rotation <= 0) ? Math.PI : -Math.PI
-        }
+      if (a < 0 && d >= 0) {
+        transform.rotation += transform.rotation <= 0 ? Math.PI : -Math.PI
+      }
 
-        transform.skew.x = transform.skew.y = 0
+      transform.skew.x = transform.skew.y = 0
     } else {
-        transform.skew.x = skewX
-        transform.skew.y = skewY
+      transform.skew.x = skewX
+      transform.skew.y = skewY
     }
 
     // Next set scale
-    transform.scale.x = Math.sqrt((a * a) + (b * b))
-    transform.scale.y = Math.sqrt((c * c) + (d * d))
+    transform.scale.x = Math.sqrt(a * a + b * b)
+    transform.scale.y = Math.sqrt(c * c + d * d)
 
     // Next set position
     transform.position.x = this.tx
@@ -82,7 +93,7 @@ export class Matrix {
     return transform
   }
 
-  transformPoint (v: Vec2): Vec2 {
+  transformPoint(v: Vec2): Vec2 {
     const x: number = this.a * v.x + this.b * v.y + this.tx
     const y: number = this.c * v.x + this.d * v.y + this.ty
 
@@ -92,8 +103,14 @@ export class Matrix {
   // -----------------------
   // Private mutator methods
   // -----------------------
-  private reset (a: number, b: number, tx: number,
-         c: number, d: number, ty: number): Matrix {
+  private reset(
+    a: number,
+    b: number,
+    tx: number,
+    c: number,
+    d: number,
+    ty: number
+  ): Matrix {
     this.a = a
     this.b = b
     this.tx = tx
@@ -104,7 +121,7 @@ export class Matrix {
     return this
   }
 
-  private multiply (m: Matrix): Matrix {
+  private multiply(m: Matrix): Matrix {
     const a: number = m.a * this.a + m.b * this.c
     const b: number = m.a * this.b + m.b * this.d
     const tx: number = m.a * this.tx + m.b * this.ty + m.tx
@@ -118,26 +135,26 @@ export class Matrix {
   // ------------------------------------
   // Static methods for creating matrices
   // ------------------------------------
-  static TRANSLATE ({x, y}: Vec2): Matrix {
+  static TRANSLATE({ x, y }: Vec2): Matrix {
     return new Matrix(1, 0, x, 0, 1, y)
   }
 
-  static ROTATE (theta: number): Matrix {
+  static ROTATE(theta: number): Matrix {
     const sin: number = Math.sin(theta)
     const cos: number = Math.cos(theta)
 
     return new Matrix(cos, sin, 0, -sin, cos, 0)
   }
 
-  static SCALE ({x, y}: Vec2): Matrix {
+  static SCALE({ x, y }: Vec2): Matrix {
     return new Matrix(x, 0, 0, 0, y, 0)
   }
 
-  static SKEW ({x, y}: Vec2): Matrix {
+  static SKEW({ x, y }: Vec2): Matrix {
     return new Matrix(1, x, 0, y, 1, 0)
   }
 
-  static MULTIPLY (...matrices: Matrix[]): Matrix {
+  static MULTIPLY(...matrices: Matrix[]): Matrix {
     if (matrices.length > 1) {
       const n: Matrix = new Matrix(1, 0, 0, 0, 1, 0)
       for (const m of matrices) {
@@ -151,7 +168,7 @@ export class Matrix {
     }
   }
 
-  static IDENTITY (): Matrix {
+  static IDENTITY(): Matrix {
     return new Matrix(1, 0, 0, 0, 1, 0)
   }
 }

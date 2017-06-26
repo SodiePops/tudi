@@ -1,8 +1,4 @@
-import {
-  Component,
-  Transform,
-  TransformInitalizer,
-} from './Components'
+import { Component, Transform, TransformInitalizer } from './Components'
 import Scene from './Scene'
 import ActionChannel from './Util/ActionChannel'
 import { Subject, async as _async } from 'most-subject' // Why would they use a keyword??
@@ -30,7 +26,12 @@ export default class Entity {
   readonly components: { [name: string]: Component } = {}
   private children: { [name: string]: Entity } = {}
 
-  constructor (name: string, transform: TransformInitalizer, components?: Component[], children?: Entity[]) {
+  constructor(
+    name: string,
+    transform: TransformInitalizer,
+    components?: Component[],
+    children?: Entity[]
+  ) {
     this.name = name
     this.id = Entity.GENERATE_ID()
     this.transform = new Transform(transform)
@@ -50,14 +51,14 @@ export default class Entity {
    * Handling Children
    */
 
-  addChild (child: Entity): void {
+  addChild(child: Entity): void {
     this.children[child.id] = child
     child.scene = this.scene
     child.parent = this
     child.setup()
   }
 
-  removeChild (id: string): Entity | void {
+  removeChild(id: string): Entity | void {
     if (this.children[id]) {
       const child = this.children[id]
       delete this.children[id]
@@ -65,11 +66,11 @@ export default class Entity {
     }
   }
 
-  getChild (idOrName: string): Entity | void {
+  getChild(idOrName: string): Entity | void {
     if (this.children[idOrName]) {
       return this.children[idOrName]
     } else {
-      for (const child of Object.values(this.children)) {
+      for (const child of (<any>Object).values(this.children)) {
         if (child.name === idOrName) {
           return child
         }
@@ -81,27 +82,27 @@ export default class Entity {
    * Handling Components
    */
 
-  addComponent (component: Component): void {
+  addComponent(component: Component): void {
     this.components[component.name] = component
     component.entity = this
     component.setup()
   }
 
-  removeComponent (componentName: string): Component | undefined {
+  removeComponent(componentName: string): Component | undefined {
     const removedComponent: Component = this.components[componentName]
     delete this.components[componentName]
     return removedComponent
   }
 
-  hasComponent (componentName: string): boolean {
+  hasComponent(componentName: string): boolean {
     return !!this.components[componentName]
   }
 
-  getComponent (componentName: string): Component {
+  getComponent(componentName: string): Component {
     return this.components[componentName]
   }
 
-  setup (): void {
+  setup(): void {
     if (this.parent) {
       // Clone the parent entity's destroy stream
       this.destroy$ = <Subject<boolean>>this.parent.destroy$.map(e => e)
@@ -114,18 +115,18 @@ export default class Entity {
     this.scene.entityCount++
     this.transform.entity = this
     this.transform.setup()
-    for (const component of Object.values(this.components)) {
+    for (const component of (<any>Object).values(this.components)) {
       component.entity = this
       component.setup()
     }
-    for (const child of Object.values(this.children)) {
+    for (const child of (<any>Object).values(this.children)) {
       child.scene = this.scene
       child.parent = this
       child.setup()
     }
   }
 
-  destroy (): void {
+  destroy(): void {
     this.destroy$.next(true).complete(true)
 
     if (this.parent) this.parent.removeChild(this.id)
@@ -136,8 +137,10 @@ export default class Entity {
    * Static Methods
    */
 
-  static GENERATE_ID (): string {
-    return (+new Date()).toString(16) +
-      (Math.random() * 100000000 | 0).toString(16)
+  static GENERATE_ID(): string {
+    return (
+      (+new Date()).toString(16) +
+      ((Math.random() * 100000000) | 0).toString(16)
+    )
   }
 }
