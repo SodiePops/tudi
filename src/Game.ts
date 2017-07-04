@@ -1,30 +1,56 @@
 import * as PIXI from 'pixi.js'
 import Scene from './Scene'
 import * as Update from './Util/Update'
+import Graphics from './Graphics'
+import { Shaders } from './Graphics/shaders'
+import { laslo, Assets, AssetInfo } from './assets/laslo'
 
 /**
  * The Game handles operation of the entire game (duh).
  * It runs the update loop and dispatches other lifetime
  * events.
- *
- * @export
- * @class Game
  */
-export default class Game {
+class Game {
+  width: number
+  height: number
+  root: HTMLElement
+  graphics: Graphics
+  assets: Assets = {
+    text: {},
+    json: {},
+    binary: {},
+    image: {},
+    audio: {},
+  }
   private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
   private scene: Scene
   private isPlaying = false
 
-  constructor(width: number, height: number, scene?: Scene) {
-    this.renderer = PIXI.autoDetectRenderer(width, height)
-    this.scene = scene ? scene : new Scene([], [])
-    document.body.appendChild(this.renderer.view)
-  }
+  async start(
+    width: number,
+    height: number,
+    targetId?: string,
+    scene?: Scene
+  ): Promise<void> {
+    this.scene = scene || new Scene({}, [])
+    this.root = targetId ? document.getElementById(targetId) : document.body
+    this.graphics = new Graphics()
+    this.graphics.load()
+    this.resize(width, height)
+    Shaders.init()
 
-  async start(scene?: Scene): Promise<void> {
-    this.scene = scene || this.scene
     this.isPlaying = true
     await this.setup()
+  }
+
+  async loadAssets(assets: (string | AssetInfo)[]) {
+    const loaded = await laslo(assets)
+
+    this.assets.text = { ...this.assets.text, ...loaded.text }
+    this.assets.json = { ...this.assets.json, ...loaded.json }
+    this.assets.binary = { ...this.assets.binary, ...loaded.binary }
+    this.assets.image = { ...this.assets.image, ...loaded.image }
+    this.assets.audio = { ...this.assets.audio, ...loaded.audio }
   }
 
   private async setup(): Promise<void> {
@@ -36,4 +62,15 @@ export default class Game {
 
     return
   }
+
+  resize(width: number, height: number) {
+    this.width = width
+    this.height = height
+    this.graphics.resize()
+  }
 }
+
+export { Game as __Game }
+// Expose Game as a singleton
+const g = new Game()
+export { g as Game }
