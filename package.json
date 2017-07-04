@@ -8,13 +8,13 @@
   "types": "lib/esm/index.d.ts",
   "scripts": {
     "precommit": "lint-staged",
-    "start": "tsc -m es6 --project config/tsconfig.json --outDir lib/esm -w",
+    "start": "tsc -m es6 --project ./tsconfig.json --outDir lib/esm -w",
     "clean": "rimraf ./lib",
     "build:umd": "webpack --config config/webpack.config.ts",
-    "build:esm": "tsc -m es6 --project config/tsconfig.json --outDir lib/esm",
-    "build:cjs": "tsc --project config/tsconfig.json",
+    "build:esm": "tsc -m es6 --project ./tsconfig.json --outDir lib/esm",
+    "build:cjs": "tsc --project ./tsconfig.json",
     "build": "npm run clean && npm run build:umd && npm run build:esm && npm run build:cjs",
-    "lint": "tslint --project config/tsconfig.json --type-check",
+    "lint": "tslint --project ./tsconfig.json --type-check",
     "prettier": "prettier --parser typescript --no-semi --single-quote --trailing-comma es5 --write \"src/**/*.ts\"",
     "test": "jest"
   },
@@ -46,7 +46,7 @@
   "homepage": "https://github.com/SodiePops/tudi#readme",
   "lint-staged": {
     "src/**/*.ts": [
-      "tslint --project config/tsconfig.json --type-check",
+      "tslint --project ./tsconfig.json --type-check",
       "prettier --parser typescript --no-semi --single-quote --trailing-comma es5 --write",
       "git add"
     ]
@@ -56,11 +56,7 @@
       ".ts": "<rootDir>/node_modules/ts-jest/preprocessor.js"
     },
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(ts|js)$",
-    "moduleFileExtensions": [
-      "ts",
-      "js",
-      "json"
-    ]
+    "moduleFileExtensions": ["ts", "js", "json"]
   },
   "devDependencies": {
     "@types/howler": "^2.0.2",
@@ -80,7 +76,7 @@
     "ts-node": "^3.1.0",
     "tslint": "^5.4.3",
     "tslint-config-prettier": "^1.1.0",
-    "typescript": "^2.2.2",
+    "typescript": "^2.4.1",
     "webpack": "^3.0.0"
   },
   "dependencies": {
