@@ -32,6 +32,16 @@ export class Matrix {
     this.ty = ty
   }
 
+  copy(other: Matrix): Matrix {
+    this.a = other.a
+    this.b = other.b
+    this.tx = other.tx
+    this.c = other.c
+    this.d = other.d
+    this.ty = other.ty
+    return this
+  }
+
   clone(): Matrix {
     return new Matrix(this.a, this.b, this.tx, this.c, this.d, this.ty)
   }
@@ -98,6 +108,23 @@ export class Matrix {
     const y: number = this.c * v.x + this.d * v.y + this.ty
 
     return new Vec2(x, y)
+  }
+
+  inverse(): Matrix {
+    const det = this.a * this.d - this.b * this.c
+
+    if (det === 0) {
+      return this.clone()
+    }
+
+    return new Matrix(
+      this.d / det,
+      -this.b / det,
+      (this.b * this.ty - this.d * this.tx) / det,
+      -this.c / det,
+      this.a / det,
+      -(this.a * this.ty - this.c * this.tx) / det
+    )
   }
 
   // -----------------------

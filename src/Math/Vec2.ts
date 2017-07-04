@@ -11,6 +11,12 @@ export class Vec2 {
     this.y = y
   }
 
+  set(x: number, y: number): Vec2 {
+    this.x = x
+    this.y = y
+    return this
+  }
+
   equals(other: Vec2): boolean {
     return this.x === other.x && this.y === other.y
   }
@@ -46,9 +52,30 @@ export class Vec2 {
     return this
   }
 
+  vecMult(other: Vec2): Vec2 {
+    this.x *= other.x
+    this.y *= other.y
+    return this
+  }
+
   div(n: number): Vec2 {
     this.x /= n
     this.y /= n
+    return this
+  }
+
+  vecDiv(other: Vec2): Vec2 {
+    this.x /= other.x
+    this.y /= other.y
+    return this
+  }
+
+  rotate(sin: number, cos: number): Vec2 {
+    const x = this.x
+    const y = this.y
+
+    this.x = x * cos - y * sin
+    this.y = x * sin + y * cos
     return this
   }
 
