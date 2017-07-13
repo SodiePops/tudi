@@ -733,7 +733,132 @@ export default class Graphics {
     )
     this.rect(x, y + height - stroke, width, stroke, color)
   }
+
+  draw(ri: RenderInstruction) {
+    switch (ri.type) {
+      case RenderInstructionType.TEXTURE:
+        this.texture(
+          ri.tex,
+          ri.posX,
+          ri.posY,
+          ri.crop,
+          ri.color,
+          ri.origin,
+          ri.scale,
+          ri.rotation,
+          ri.flipX,
+          ri.flipY
+        )
+        break
+      case RenderInstructionType.QUAD:
+        this.quad(
+          ri.posX,
+          ri.posY,
+          ri.width,
+          ri.height,
+          ri.color,
+          ri.origin,
+          ri.scale,
+          ri.rotation
+        )
+        break
+      case RenderInstructionType.RECT:
+        this.rect(ri.x, ri.y, ri.width, ri.height, ri.color)
+        break
+      case RenderInstructionType.TRIANGLE:
+        this.triangle(ri.a, ri.b, ri.c, ri.colA, ri.colB, ri.colC)
+        break
+      case RenderInstructionType.CIRCLE:
+        this.circle(ri.pos, ri.rad, ri.steps, ri.color)
+        break
+      case RenderInstructionType.HOLLOWRECT:
+        this.hollowRect(ri.x, ri.y, ri.width, ri.height, ri.stroke, ri.color)
+        break
+      default:
+        break
+    }
+  }
 }
+
+export enum RenderInstructionType {
+  TEXTURE = 'TEXTURE',
+  QUAD = 'QUAD',
+  RECT = 'RECT',
+  TRIANGLE = 'TRIANGLE',
+  CIRCLE = 'CIRCLE',
+  HOLLOWRECT = 'HOLLOWRECT',
+}
+
+export interface TextureInstruction {
+  type: RenderInstructionType.TEXTURE
+  tex: Texture
+  posX: number
+  posY: number
+  crop?: Rectangle
+  color?: Color
+  origin?: Vec2
+  scale?: Vec2
+  rotation?: number
+  flipX?: boolean
+  flipY?: boolean
+}
+
+export interface QuadInstruction {
+  type: RenderInstructionType.QUAD
+  posX: number
+  posY: number
+  width: number
+  height: number
+  color?: Color
+  origin?: Vec2
+  scale?: Vec2
+  rotation?: number
+}
+
+export interface RectInstruction {
+  type: RenderInstructionType.RECT
+  x: number
+  y: number
+  width: number
+  height: number
+  color: Color
+}
+
+export interface TriangleInstruction {
+  type: RenderInstructionType.TRIANGLE
+  a: Vec2
+  b: Vec2
+  c: Vec2
+  colA: Color
+  colB: Color
+  colC: Color
+}
+
+export interface CircleInstruction {
+  type: RenderInstructionType.CIRCLE
+  pos: Vec2
+  rad: number
+  steps: number
+  color: Color
+}
+
+export interface HollowRectInstruction {
+  type: RenderInstructionType.HOLLOWRECT
+  x: number
+  y: number
+  width: number
+  height: number
+  stroke: number
+  color: Color
+}
+
+export type RenderInstruction =
+  | TextureInstruction
+  | QuadInstruction
+  | RectInstruction
+  | TriangleInstruction
+  | CircleInstruction
+  | HollowRectInstruction
 
 export enum ResolutionStyle {
   /** Renders the buffer at the Center of the Screen with no scaling */
