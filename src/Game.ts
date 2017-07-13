@@ -1,8 +1,10 @@
-import * as PIXI from 'pixi.js'
+// import * as PIXI from 'pixi.js'
+import * as most from 'most'
 import Scene from './Scene'
 import * as Update from './Util/Update'
 import Graphics from './Graphics'
 import { Shaders } from './Graphics/shaders'
+import { Shader } from './Graphics/Shader'
 import { laslo, Assets, AssetInfo } from './assets/laslo'
 
 /**
@@ -22,7 +24,9 @@ class Game {
     image: {},
     audio: {},
   }
-  private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
+  shaders: Shader[] = []
+  update$: most.Stream<number>
+  // private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
   private scene: Scene
   private isPlaying = false
 
@@ -38,6 +42,7 @@ class Game {
     this.graphics.load()
     this.resize(width, height)
     Shaders.init()
+    this.shaders = [Shaders.primitive, Shaders.solid, Shaders.texture]
 
     this.isPlaying = true
     await this.setup()
@@ -54,11 +59,15 @@ class Game {
   }
 
   private async setup(): Promise<void> {
-    await this.scene.setup()
+    this.update$ = Update.update$.map(evt => {
+      this.graphics.finalize()
+      this.graphics.update()
+      this.graphics.reset()
 
-    Update.subscribe(() => {
-      this.renderer.render(this.scene.stage)
+      return evt.deltaTime
     })
+
+    await this.scene.setup()
 
     return
   }

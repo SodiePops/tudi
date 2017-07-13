@@ -1,10 +1,14 @@
-import * as PIXI from 'pixi.js'
 import { Component } from './Component'
+import { Shader } from '../Graphics/Shader'
+import { Shaders } from '../Graphics/shaders'
+// import Texture from '../Graphics/Texture'
+import { RenderInstructionType } from '../Graphics'
 
 export class SpriteComponent extends Component {
   name = 'sprite'
   sprite: PIXI.Sprite
   spriteName: string
+  shader: Shader = Shaders.texture
 
   constructor(spriteName: string) {
     super()
@@ -26,7 +30,7 @@ export class SpriteComponent extends Component {
         t.skew.x,
         t.skew.y
       )
-      this.entity.scene.stage.addChild(this.sprite)
+      // this.entity.scene.stage.addChild(this.sprite)
     } else {
       throw new Error(`Sprite resource ${this.spriteName} has not been loaded!`)
     }
@@ -36,6 +40,21 @@ export class SpriteComponent extends Component {
   }
 
   update(): void {
+    // TODO: Don't mutate renderQueue directly
+    this.shader.renderQueue.push({
+      type: RenderInstructionType.TEXTURE,
+      tex: null,
+      posX: 0,
+      posY: 0,
+      crop: null,
+      color: null,
+      origin: null,
+      scale: null,
+      rotation: 0,
+      flipX: false,
+      flipY: false,
+    })
+
     const t = this.entity.transform.worldTransform.decompose()
     this.sprite.setTransform(
       t.position.x,
@@ -49,6 +68,6 @@ export class SpriteComponent extends Component {
   }
 
   destroy(): void {
-    this.entity.scene.stage.removeChild(this.sprite)
+    // this.entity.scene.stage.removeChild(this.sprite)
   }
 }

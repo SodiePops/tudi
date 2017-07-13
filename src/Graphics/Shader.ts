@@ -1,4 +1,5 @@
 import { Game } from '../Game'
+import { RenderInstruction } from '../Graphics'
 import Uniform, { UniformType } from './Uniform'
 import Attribute, { AttributeType } from './Attribute'
 
@@ -18,6 +19,8 @@ export class Shader {
   uniforms: Uniform[]
   attributes: Attribute[]
   uniformsByName: { [key: string]: Uniform }
+
+  renderQueue: RenderInstruction[] = []
 
   constructor(data: ShaderData) {
     const gl = Game.graphics.gl

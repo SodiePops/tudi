@@ -1,9 +1,9 @@
-import * as PIXI from 'pixi.js'
+import { Game } from './Game'
 import Entity from './Entity'
 import * as ResourceManager from './Util/ResourceManager'
 import * as AudioManager from './Util/AudioManager'
-import * as Update from './Util/Update'
 import ActionChannel from './Util/ActionChannel'
+import { Camera } from './Components/camera'
 import * as most from 'most'
 
 export interface SceneResources {
@@ -18,7 +18,8 @@ export interface SceneResources {
  * thought of as a "level".
  */
 export default class Scene {
-  stage: PIXI.Container
+  mainCamera: Camera = null
+  cameras: Camera[] = []
   entityCount: number
   entities: { [name: string]: Entity } = {}
   resources: SceneResources
@@ -26,7 +27,6 @@ export default class Scene {
   actions: ActionChannel = new ActionChannel()
 
   constructor(resources: SceneResources, entities: Entity[]) {
-    this.stage = new PIXI.Container()
     for (const entity of entities) {
       this.entities[entity.id] = entity
     }
@@ -49,7 +49,20 @@ export default class Scene {
   }
 
   async setup(): Promise<void> {
-    this.update$ = Update.update$.map(evt => evt.deltaTime)
+    this.update$ = Game.update$.map(dt => {
+      // Tell each camera to draw
+      for (const camera of this.cameras) {
+        camera.draw()
+      }
+
+      // Clear each shader's render queue
+      for (const shader of Game.shaders) {
+        shader.renderQueue = []
+      }
+
+      return dt
+    })
+
     await ResourceManager.loadResources(this.resources.images)
     await AudioManager.loadSounds(this.resources.sounds)
 
