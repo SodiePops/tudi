@@ -2,8 +2,9 @@ import { Vec2 } from './Vec2'
 
 /**
  * A 3x3 Matrix
- * ┌a, b, tx┐
- * │c, d, ty│
+ * 
+ * ┌a, c, tx┐
+ * │b, d, ty│
  * └0, 0,  1┘
  * @export
  * @class Matrix
@@ -11,48 +12,102 @@ import { Vec2 } from './Vec2'
 export class Matrix {
   a = 1
   b = 0
-  tx = 0
   c = 0
   d = 1
+  tx = 0
   ty = 0
 
   constructor(
     a: number,
     b: number,
-    tx: number,
     c: number,
     d: number,
+    tx: number,
     ty: number
   ) {
     this.a = a
     this.b = b
-    this.tx = tx
     this.c = c
     this.d = d
+    this.tx = tx
     this.ty = ty
+  }
+
+  identity(): Matrix {
+    this.a = 1
+    this.b = 0
+    this.c = 0
+    this.d = 1
+    this.tx = 0
+    this.ty = 0
+    return this
+  }
+
+  scale(sx: number | Vec2, sy?: number): Matrix {
+    if (sx instanceof Vec2) {
+      sy = sx.y
+      sx = sx.x
+    } else if (sy === undefined) {
+      sy = sx
+    }
+
+    this.a *= sx
+    this.b *= sx
+    this.c *= sy
+    this.d *= sy
+    return this
+  }
+
+  // TODO: Implement global engine options to use rad/deg/turn
+  // turns are #1
+  rotate(rad: number): Matrix {
+    const sin = Math.sin(rad)
+    const cos = Math.cos(rad)
+
+    let temp = this.a * cos + this.c * sin
+    this.c = this.a * -sin + this.c * cos
+    this.a = temp
+
+    temp = this.b * cos + this.d * sin
+    this.d = this.b * -sin + this.d * cos
+    this.b = temp
+
+    return this
+  }
+
+  translate(dx: number | Vec2, dy?: number): Matrix {
+    if (dx instanceof Vec2) {
+      dy = dx.y
+      dx = dx.x
+    }
+
+    this.tx += this.a * dx + this.c * dy
+    this.ty += this.b * dx + this.d * dy
+
+    return this
   }
 
   copy(other: Matrix): Matrix {
     this.a = other.a
     this.b = other.b
-    this.tx = other.tx
     this.c = other.c
     this.d = other.d
+    this.tx = other.tx
     this.ty = other.ty
     return this
   }
 
   clone(): Matrix {
-    return new Matrix(this.a, this.b, this.tx, this.c, this.d, this.ty)
+    return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty)
   }
 
   toArray(): number[] {
-    return [this.a, this.b, this.tx, this.c, this.d, this.ty]
+    return [this.a, this.b, 0, this.c, this.d, 0, this.tx, this.ty, 1]
   }
 
   toString(): string {
-    return `┌${this.a} ${this.b} ${this.tx}┐
-│${this.c} ${this.d} ${this.ty}│
+    return `┌${this.a} ${this.c} ${this.tx}┐
+│${this.b} ${this.d} ${this.ty}│
 └0 0 1┘`
   }
 
@@ -104,8 +159,8 @@ export class Matrix {
   }
 
   transformPoint(v: Vec2): Vec2 {
-    const x: number = this.a * v.x + this.b * v.y + this.tx
-    const y: number = this.c * v.x + this.d * v.y + this.ty
+    const x: number = this.a * v.x + this.c * v.y + this.tx
+    const y: number = this.b * v.x + this.d * v.y + this.ty
 
     return new Vec2(x, y)
   }
@@ -118,12 +173,12 @@ export class Matrix {
     }
 
     return new Matrix(
-      this.d / det,
-      -this.b / det,
-      (this.b * this.ty - this.d * this.tx) / det,
-      -this.c / det,
-      this.a / det,
-      -(this.a * this.ty - this.c * this.tx) / det
+      this.d / det, // a
+      -this.b / det, // b
+      -this.c / det, // c
+      this.a / det, // d
+      (this.c * this.ty - this.d * this.tx) / det, // tx
+      -(this.a * this.ty - this.b * this.tx) / det // ty
     )
   }
 
@@ -133,30 +188,32 @@ export class Matrix {
   private reset(
     a: number,
     b: number,
-    tx: number,
     c: number,
     d: number,
+    tx: number,
     ty: number
   ): Matrix {
     this.a = a
     this.b = b
-    this.tx = tx
     this.c = c
     this.d = d
+    this.tx = tx
     this.ty = ty
 
     return this
   }
 
-  private multiply(m: Matrix): Matrix {
-    const a: number = m.a * this.a + m.b * this.c
-    const b: number = m.a * this.b + m.b * this.d
-    const tx: number = m.a * this.tx + m.b * this.ty + m.tx
-    const c: number = m.c * this.a + m.d * this.c
-    const d: number = m.c * this.b + m.d * this.d
-    const ty: number = m.c * this.tx + m.d * this.ty + m.ty
+  multiply(m: Matrix): Matrix {
+    const a: number = this.a * m.a + this.c * m.b
+    const b: number = this.b * m.a + this.d * m.b
 
-    return this.reset(a, b, tx, c, d, ty)
+    const c: number = this.a * m.c + this.c * m.d
+    const d: number = this.b * m.c + this.d * m.d
+
+    const tx: number = this.a * m.tx + this.c * m.ty + this.tx
+    const ty: number = this.b * m.tx + this.d * m.ty + this.ty
+
+    return this.reset(a, b, c, d, tx, ty)
   }
 
   // ------------------------------------
