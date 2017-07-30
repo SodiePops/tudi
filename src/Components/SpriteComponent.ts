@@ -1,38 +1,33 @@
 import { Component } from './Component'
 import { Shader } from '../Graphics/Shader'
 import { Shaders } from '../Graphics/shaders'
-// import Texture from '../Graphics/Texture'
+import Texture from '../Graphics/Texture'
 import { RenderInstructionType } from '../Graphics'
+import { Game } from '../Game'
+import { Vec2 } from '../Math'
 
 export class SpriteComponent extends Component {
   name = 'sprite'
-  sprite: PIXI.Sprite
+  texture: Texture
   spriteName: string
-  shader: Shader = Shaders.texture
+  origin: Vec2
+  shader: Shader
+  visible: boolean = true
 
-  constructor(spriteName: string) {
+  constructor(spriteName: string, origin?: Vec2) {
     super()
     this.spriteName = spriteName
+    this.origin = origin
   }
 
   setup(): void {
-    if (PIXI.loader.resources[this.spriteName]) {
-      const texture: PIXI.Texture =
-        PIXI.loader.resources[this.spriteName].texture
-      this.sprite = new PIXI.Sprite(texture)
-      const t = this.entity.transform.worldTransform.decompose()
-      this.sprite.setTransform(
-        t.position.x,
-        t.position.y,
-        t.scale.x,
-        t.scale.y,
-        t.rotation,
-        t.skew.x,
-        t.skew.y
-      )
-      // this.entity.scene.stage.addChild(this.sprite)
+    this.shader = Shaders.texture
+    if (Game.assets.image[this.spriteName]) {
+      this.texture = Game.assets.image[this.spriteName]
     } else {
-      throw new Error(`Sprite resource ${this.spriteName} has not been loaded!`)
+      throw new Error(
+        `Texture resource ${this.spriteName} has not been loaded!`
+      )
     }
 
     this.entity.update$.observe(this.update.bind(this))
@@ -41,30 +36,19 @@ export class SpriteComponent extends Component {
 
   update(): void {
     // TODO: Don't mutate renderQueue directly
-    this.shader.renderQueue.push({
-      type: RenderInstructionType.TEXTURE,
-      tex: null,
-      posX: 0,
-      posY: 0,
-      crop: null,
-      color: null,
-      origin: null,
-      scale: null,
-      rotation: 0,
-      flipX: false,
-      flipY: false,
-    })
-
-    const t = this.entity.transform.worldTransform.decompose()
-    this.sprite.setTransform(
-      t.position.x,
-      t.position.y,
-      t.scale.x,
-      t.scale.y,
-      t.rotation,
-      t.skew.x,
-      t.skew.y
-    )
+    if (this.visible) {
+      this.shader.renderQueue.push({
+        type: RenderInstructionType.TEXTURE,
+        tex: this.texture,
+        mat: this.entity.transform.worldTransform,
+        origin: this.origin, // TODO: Fill in rest of these?
+        crop: null,
+        color: null,
+        flipX: false,
+        flipY: false,
+      })
+      ;(<any>window).t = this.entity.transform
+    }
   }
 
   destroy(): void {
