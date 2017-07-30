@@ -1,16 +1,19 @@
 import { Game } from '../Game'
 import Rectangle from './Rectangle'
 import { Vec2 } from '../Math'
-import Color from './Color'
+// import Color from './Color'
 
 export default class Texture {
-  webGLTexture: WebGLTexture | null
+  /** The actual WebGL Texture object */
+  webGLTexture: WebGLTexture
+  /** The path to the image the Texture was created from  */
   path: string
   bounds: Rectangle
   frame: Rectangle
   disposed: boolean = false
   center: Vec2
   metadata: { [path: string]: any } = {}
+  image?: HTMLImageElement
 
   texWidth: number
   texHeight: number
@@ -94,37 +97,6 @@ export default class Texture {
       frame  ${this.frame.toString()}`
   }
 
-  draw(opts: DrawOptions) {
-    Game.graphics.texture(
-      this,
-      opts.position.x,
-      opts.position.y,
-      undefined,
-      opts.color,
-      opts.origin,
-      opts.scale,
-      opts.rotation,
-      opts.flipX,
-      opts.flipY
-    )
-  }
-
-  drawCropped() {
-    /* TODO */
-  }
-  drawCentered() {
-    /* TODO */
-  }
-  drawCroppedCentered() {
-    /* TODO */
-  }
-  drawJustified() {
-    /* TODO */
-  }
-  drawCroppedJustified() {
-    /* TODO */
-  }
-
   dispose() {
     if (!this.disposed) {
       const gl = Game.graphics.gl
@@ -148,7 +120,9 @@ export default class Texture {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
     gl.bindTexture(gl.TEXTURE_2D, null)
 
-    return new Texture(tex, image.width, image.height)
+    const newTex = new Texture(tex, image.width, image.height)
+    newTex.image = image
+    return newTex
   }
 
   static createFromData(
@@ -178,14 +152,4 @@ export default class Texture {
 
     return new Texture(tex, width, height)
   }
-}
-
-export interface DrawOptions {
-  position: Vec2
-  origin?: Vec2
-  scale?: Vec2
-  rotation?: number
-  color?: Color
-  flipX?: boolean
-  flipY?: boolean
 }

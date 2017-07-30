@@ -18,8 +18,8 @@ export default class Graphics {
   buffer: RenderTarget | null
   orthographic: Matrix = Matrix.IDENTITY()
   drawCalls: number = 0
-  resolutionStyle: ResolutionStyle = ResolutionStyle.Contain
-  borderColor: Color = Color.black.clone()
+  resolutionStyle: ResolutionStyle = ResolutionStyle.Fill
+  borderColor: Color = Color.red.clone()
   clearColor: Color = new Color(0.1, 0.1, 0.3, 1)
 
   private toScreen: Matrix = Matrix.IDENTITY()
@@ -156,13 +156,10 @@ export default class Graphics {
     if (this.buffer) this.buffer.dispose()
     this.buffer = RenderTarget.create(Game.width, Game.height)
 
-    this.orthographic = Matrix.MULTIPLY(
-      Matrix.IDENTITY(),
-      Matrix.TRANSLATE(new Vec2(-1, -1)),
-      Matrix.SCALE(
-        new Vec2(1 / this.buffer.width * 2, -1 / this.buffer.height * 2)
-      )
-    )
+    this.orthographic
+      .identity()
+      .translate(-1, 1)
+      .scale(1 / this.buffer.width * 2, -1 / this.buffer.height * 2)
   }
 
   update() {
@@ -178,10 +175,6 @@ export default class Graphics {
   }
 
   getOutputBounds(): Rectangle {
-    if (!this.canvas || !this.buffer) {
-      return new Rectangle()
-    }
-
     let scaleX = 1
     let scaleY = 1
 
@@ -245,18 +238,16 @@ export default class Graphics {
     this.vertices = []
     this.colors = []
     this.texcoords = []
-    if (this.buffer) this.setRenderTarget(this.buffer)
+    this.setRenderTarget(this.buffer)
     this.clear(this.clearColor)
   }
 
-  setRenderTarget(target: RenderTarget | null) {
+  setRenderTarget(target: RenderTarget) {
     if (this.currentTarget !== target) {
       this.flush()
       if (!target) {
-        if (this.canvas) {
-          this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
-          this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
-        }
+        this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, null)
+        this.gl.viewport(0, 0, this.canvas.width, this.canvas.height)
       } else {
         this.gl.bindFramebuffer(this.gl.FRAMEBUFFER, target.frameBuffer)
         this.gl.viewport(0, 0, target.width, target.height)
@@ -284,7 +275,7 @@ export default class Graphics {
       }
 
       const swapped = !!this.nextShader
-      if (this.nextShader) {
+      if (swapped) {
         if (this.currentShader) {
           for (const attribute of this.currentShader.attributes) {
             this.gl.disableVertexAttribArray(attribute.attribute)
@@ -310,51 +301,45 @@ export default class Graphics {
       }
 
       let textureCounter = 0
-      if (this.currentShader) {
-        for (const uniform of this.currentShader.uniforms) {
-          const location = uniform.uniform
+      for (const uniform of this.currentShader.uniforms) {
+        const location = uniform.uniform
 
-          if (swapped || uniform.dirty) {
-            if (uniform.type === UniformType.sampler2D) {
-              this.gl.activeTexture(
-                (this.gl as any)[`TEXTURE${textureCounter}`] as number
+        if (swapped || uniform.dirty) {
+          if (uniform.type === UniformType.sampler2D) {
+            this.gl.activeTexture(
+              (this.gl as any)[`TEXTURE${textureCounter}`] as number
+            )
+            if (uniform.value instanceof Texture) {
+              this.gl.bindTexture(
+                this.gl.TEXTURE_2D,
+                uniform.value.webGLTexture
               )
-              if (uniform.value instanceof Texture) {
-                this.gl.bindTexture(
-                  this.gl.TEXTURE_2D,
-                  uniform.value.webGLTexture
-                )
-              } else if (uniform.value instanceof RenderTarget) {
-                this.gl.bindTexture(
-                  this.gl.TEXTURE_2D,
-                  uniform.value.texture.webGLTexture
-                )
-              } else {
-                this.gl.bindTexture(this.gl.TEXTURE_2D, uniform.value)
-              }
-              this.gl.uniform1i(location, textureCounter)
-              textureCounter++
+            } else if (uniform.value instanceof RenderTarget) {
+              this.gl.bindTexture(
+                this.gl.TEXTURE_2D,
+                uniform.value.texture.webGLTexture
+              )
             } else {
-              setUniformValue[uniform.type as string](
-                this.gl,
-                uniform.uniform,
-                uniform.value
-              )
+              this.gl.bindTexture(this.gl.TEXTURE_2D, uniform.value)
             }
-
-            uniform.dirty = false
+            this.gl.uniform1i(location, textureCounter)
+            textureCounter += 1
+          } else {
+            setUniformValue[uniform.type as string](
+              this.gl,
+              uniform.uniform,
+              uniform.value
+            )
           }
+
+          uniform.dirty = false
         }
-        this.currentShader.dirty = false
       }
+      this.currentShader.dirty = false
     }
   }
 
   flush() {
-    if (!this.currentShader) {
-      return
-    }
-
     if (this.vertices.length > 0) {
       for (const attr of this.currentShader.attributes) {
         switch (attr.type) {
@@ -425,7 +410,6 @@ export default class Graphics {
             break
         }
       }
-
       this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertices.length / 2)
       this.drawCalls++
 
@@ -436,20 +420,13 @@ export default class Graphics {
   }
 
   finalize() {
-    if (!this.canvas || !this.buffer) {
-      return
-    }
-
     this.setRenderTarget(null)
     this.clear(this.borderColor)
 
-    this.toScreen = Matrix.MULTIPLY(
-      Matrix.IDENTITY(),
-      Matrix.TRANSLATE(new Vec2(-1, -1)),
-      Matrix.SCALE(
-        new Vec2(1 / this.canvas.width * 2, 1 / this.canvas.height * 2)
-      )
-    )
+    this.toScreen
+      .identity()
+      .translate(-1, -1)
+      .scale(1 / this.canvas.width * 2, 1 / this.canvas.height * 2)
 
     this.shader = Shaders.texture
     this.shader.sampler2D.value = this.buffer.texture.webGLTexture
@@ -502,15 +479,14 @@ export default class Graphics {
   private botRight = new Vec2()
   private texToDraw = new Texture(null, 0, 0, new Rectangle(), new Rectangle())
 
+  private scaledOrigin = new Vec2()
+
   texture(
     tex: Texture,
-    posX: number,
-    posY: number,
+    mat: Matrix,
+    origin?: Vec2,
     crop?: Rectangle,
     color?: Color,
-    origin?: Vec2,
-    scale?: Vec2,
-    rotation?: number,
     flipX?: boolean,
     flipY?: boolean
   ) {
@@ -534,28 +510,18 @@ export default class Graphics {
     this.botRight.set(left + width, top + height)
 
     if (origin && (origin.x !== 0 || origin.y !== 0)) {
-      this.topLeft.sub(origin)
-      this.topRight.sub(origin)
-      this.botLeft.sub(origin)
-      this.botRight.sub(origin)
+      this.scaledOrigin.set(origin.x * tex.width, origin.y * tex.height)
+      this.topLeft.sub(this.scaledOrigin)
+      this.topRight.sub(this.scaledOrigin)
+      this.botLeft.sub(this.scaledOrigin)
+      this.botRight.sub(this.scaledOrigin)
     }
 
-    if (scale && (scale.x !== 1 || scale.y !== 1)) {
-      this.topLeft.vecMult(scale)
-      this.topRight.vecMult(scale)
-      this.botLeft.vecMult(scale)
-      this.botRight.vecMult(scale)
-    }
-
-    if (rotation) {
-      const s = Math.sin(rotation)
-      const c = Math.cos(rotation)
-
-      this.topLeft.rotate(s, c)
-      this.topRight.rotate(s, c)
-      this.botLeft.rotate(s, c)
-      this.botRight.rotate(s, c)
-    }
+    // TODO: Would it be better to do this in the shader?
+    this.topLeft = mat.transformPoint(this.topLeft)
+    this.topRight = mat.transformPoint(this.topRight)
+    this.botLeft = mat.transformPoint(this.botLeft)
+    this.botRight = mat.transformPoint(this.botRight)
 
     let uvMinX = t.bounds.x / t.width
     let uvMinY = t.bounds.y / t.height
@@ -575,43 +541,12 @@ export default class Graphics {
     }
 
     const col = color || Color.white
-
-    this.push(posX + this.topLeft.x, posY + this.topLeft.y, uvMinX, uvMinY, col)
-    this.pushUnsafe(
-      posX + this.topRight.x,
-      posY + this.topRight.y,
-      uvMaxX,
-      uvMinY,
-      col
-    )
-    this.pushUnsafe(
-      posX + this.botRight.x,
-      posY + this.botRight.y,
-      uvMaxX,
-      uvMaxY,
-      col
-    )
-    this.pushUnsafe(
-      posX + this.topLeft.x,
-      posY + this.topLeft.y,
-      uvMinX,
-      uvMinY,
-      col
-    )
-    this.pushUnsafe(
-      posX + this.botRight.x,
-      posY + this.botRight.y,
-      uvMaxX,
-      uvMaxY,
-      col
-    )
-    this.pushUnsafe(
-      posX + this.botLeft.x,
-      posY + this.botLeft.y,
-      uvMinX,
-      uvMaxY,
-      col
-    )
+    this.push(this.topLeft.x, this.topLeft.y, uvMinX, uvMinY, col)
+    this.pushUnsafe(this.topRight.x, this.topRight.y, uvMaxX, uvMinY, col)
+    this.pushUnsafe(this.botRight.x, this.botRight.y, uvMaxX, uvMaxY, col)
+    this.pushUnsafe(this.topLeft.x, this.topLeft.y, uvMinX, uvMinY, col)
+    this.pushUnsafe(this.botRight.x, this.botRight.y, uvMaxX, uvMaxY, col)
+    this.pushUnsafe(this.botLeft.x, this.botLeft.y, uvMinX, uvMaxY, col)
   }
 
   quad(
@@ -640,10 +575,10 @@ export default class Graphics {
     }
 
     if (scale && (scale.x !== 1 || scale.y !== 1)) {
-      this.topLeft.vecMult(scale)
-      this.topRight.vecMult(scale)
-      this.botLeft.vecMult(scale)
-      this.botRight.vecMult(scale)
+      this.topLeft.mult(scale)
+      this.topRight.mult(scale)
+      this.botLeft.mult(scale)
+      this.botRight.mult(scale)
     }
 
     if (rotation) {
@@ -739,13 +674,10 @@ export default class Graphics {
       case RenderInstructionType.TEXTURE:
         this.texture(
           ri.tex,
-          ri.posX,
-          ri.posY,
+          ri.mat,
+          ri.origin,
           ri.crop,
           ri.color,
-          ri.origin,
-          ri.scale,
-          ri.rotation,
           ri.flipX,
           ri.flipY
         )
@@ -792,13 +724,10 @@ export enum RenderInstructionType {
 export interface TextureInstruction {
   type: RenderInstructionType.TEXTURE
   tex: Texture
-  posX: number
-  posY: number
+  mat: Matrix
   crop?: Rectangle
   color?: Color
   origin?: Vec2
-  scale?: Vec2
-  rotation?: number
   flipX?: boolean
   flipY?: boolean
 }

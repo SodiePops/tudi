@@ -1,4 +1,5 @@
 import { Shader } from './Shader'
+import { Matrix, Vec2 } from '../Math'
 
 export default class Uniform {
   private _shader: Shader
@@ -10,7 +11,7 @@ export default class Uniform {
   dirty: boolean
 
   get value(): any {
-    return this.value
+    return this._value
   }
   set value(a: any) {
     if (this._value != a) {
@@ -75,61 +76,77 @@ export type SetUniformValueFunc = (
   value: any
 ) => void
 export const setUniformValue: { [type: string]: SetUniformValueFunc } = {
-  [UniformType.float]: (gl, location, value) => {
+  [UniformType.float]: (gl, location, value: number) => {
     gl.uniform1f(location, value)
   },
-  [UniformType.vec2]: (gl, location, value) => {
-    gl.uniform2f(location, value[0], value[1])
+  [UniformType.vec2]: (gl, location, value: number[] | Vec2) => {
+    if (value instanceof Vec2) {
+      gl.uniform2f(location, value.x, value.y)
+    } else {
+      gl.uniform2f(location, value[0], value[1])
+    }
   },
-  [UniformType.vec3]: (gl, location, value) => {
+  [UniformType.vec3]: (gl, location, value: number[]) => {
     gl.uniform3f(location, value[0], value[1], value[2])
   },
-  [UniformType.vec4]: (gl, location, value) => {
+  [UniformType.vec4]: (gl, location, value: number[]) => {
     gl.uniform4f(location, value[0], value[1], value[2], value[3])
   },
-  [UniformType.floatArray]: (gl, location, value) => {
+  [UniformType.floatArray]: (gl, location, value: Float32Array | number[]) => {
     gl.uniform1fv(location, value)
   },
-  [UniformType.vec2Array]: (gl, location, value) => {
+  [UniformType.vec2Array]: (gl, location, value: Float32Array | number[]) => {
     gl.uniform2fv(location, value)
   },
-  [UniformType.vec3Array]: (gl, location, value) => {
+  [UniformType.vec3Array]: (gl, location, value: Float32Array | number[]) => {
     gl.uniform3fv(location, value)
   },
-  [UniformType.vec4Array]: (gl, location, value) => {
+  [UniformType.vec4Array]: (gl, location, value: Float32Array | number[]) => {
     gl.uniform4fv(location, value)
   },
-  [UniformType.int]: (gl, location, value) => {
+  [UniformType.int]: (gl, location, value: number) => {
     gl.uniform1i(location, value)
   },
-  [UniformType.ivec2]: (gl, location, value) => {
-    gl.uniform2i(location, value[0], value[1])
+  [UniformType.ivec2]: (gl, location, value: number[] | Vec2) => {
+    if (value instanceof Vec2) {
+      gl.uniform2i(location, Math.round(value.x), Math.round(value.y))
+    } else {
+      gl.uniform2i(location, value[0], value[1])
+    }
   },
-  [UniformType.ivec3]: (gl, location, value) => {
+  [UniformType.ivec3]: (gl, location, value: number[]) => {
     gl.uniform3i(location, value[0], value[1], value[2])
   },
-  [UniformType.ivec4]: (gl, location, value) => {
+  [UniformType.ivec4]: (gl, location, value: number[]) => {
     gl.uniform4i(location, value[0], value[1], value[2], value[3])
   },
-  [UniformType.intArray]: (gl, location, value) => {
+  [UniformType.intArray]: (gl, location, value: Int32Array | number[]) => {
     gl.uniform1iv(location, value)
   },
-  [UniformType.ivec2Array]: (gl, location, value) => {
+  [UniformType.ivec2Array]: (gl, location, value: Int32Array | number[]) => {
     gl.uniform2iv(location, value)
   },
-  [UniformType.ivec3Array]: (gl, location, value) => {
+  [UniformType.ivec3Array]: (gl, location, value: Int32Array | number[]) => {
     gl.uniform3iv(location, value)
   },
-  [UniformType.ivec4Array]: (gl, location, value) => {
+  [UniformType.ivec4Array]: (gl, location, value: Int32Array | number[]) => {
     gl.uniform4iv(location, value)
   },
-  [UniformType.mat2]: (gl, location, value) => {
+  [UniformType.mat2]: (gl, location, value: Float32Array | number[]) => {
     gl.uniformMatrix2fv(location, false, value)
   },
-  [UniformType.mat3]: (gl, location, value) => {
-    gl.uniformMatrix3fv(location, false, value)
+  [UniformType.mat3]: (
+    gl,
+    location,
+    value: Float32Array | number[] | Matrix
+  ) => {
+    if (value instanceof Matrix) {
+      gl.uniformMatrix3fv(location, false, value.toArray())
+    } else {
+      gl.uniformMatrix3fv(location, false, value)
+    }
   },
-  [UniformType.mat4]: (gl, location, value) => {
+  [UniformType.mat4]: (gl, location, value: Float32Array | number[]) => {
     gl.uniformMatrix4fv(location, false, value)
   },
 }

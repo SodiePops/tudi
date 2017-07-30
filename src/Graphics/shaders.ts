@@ -15,6 +15,7 @@ export class Shaders {
 
   static shaderSources: { [name: string]: ShaderData } = {
     texture: {
+      name: 'texture',
       vert: `
         attribute vec2 a_position;
         attribute vec2 a_texcoord;
@@ -51,6 +52,7 @@ export class Shaders {
       ],
     },
     solid: {
+      name: 'solid',
       vert: `
         attribute vec2 a_position;
         attribute vec2 a_texcoord;
@@ -87,6 +89,7 @@ export class Shaders {
       ],
     },
     primitive: {
+      name: 'primitive',
       vert: `
         attribute vec2 a_position;
         attribute vec4 a_color;

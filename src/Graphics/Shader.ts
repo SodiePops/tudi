@@ -13,16 +13,18 @@ import Attribute, { AttributeType } from './Attribute'
  * @class Shader
  */
 export class Shader {
+  name: string
   program: WebGLProgram
   dirty: boolean = true
   sampler2D: Uniform
   uniforms: Uniform[]
   attributes: Attribute[]
-  uniformsByName: { [key: string]: Uniform }
+  uniformsByName: { [key: string]: Uniform } = {}
 
   renderQueue: RenderInstruction[] = []
 
   constructor(data: ShaderData) {
+    this.name = data.name
     const gl = Game.graphics.gl
 
     const vertexShader = gl.createShader(gl.VERTEX_SHADER)
@@ -74,16 +76,22 @@ export class Shader {
         this.sampler2D = uniform
       }
 
+      this.uniformsByName[uniform.name] = uniform
+
       return uniform
     })
   }
 
   set(name: string, value: any) {
+    if (!this.uniformsByName[name]) {
+      throw new Error(`Uniform ${name} does not exist on this shader.`)
+    }
     this.uniformsByName[name].value = value
   }
 }
 
 export interface ShaderData {
+  name: string
   frag: string
   vert: string
   uniforms: { name: string; type: UniformType; value?: any }[]
