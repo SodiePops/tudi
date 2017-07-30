@@ -1,6 +1,6 @@
 /**
- * Represents a point in 2D space
- * @class Vec2
+ * Represents a point in 2D space. Has both functional
+ * and object-oriented APIs for manipulating vectors.
  */
 export class Vec2 {
   x: number
@@ -33,6 +33,7 @@ export class Vec2 {
     this.y = other.y
   }
 
+  /** Displays vector values in a formatted way */
   toString(): string {
     return `<${this.x}, ${this.y}>`
   }

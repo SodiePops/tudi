@@ -2,6 +2,9 @@ import { Game } from '../game'
 import { Rectangle } from '../util/rectangle'
 import { Vec2 } from '../math'
 
+/**
+ * A texture object used for WebGL rendering.
+ */
 export class Texture {
   /** The actual WebGL Texture object */
   webGLTexture: WebGLTexture
@@ -106,6 +109,7 @@ export class Texture {
     }
   }
 
+  /** Creates a texture from an HTMLImageElement */
   static create(image: HTMLImageElement): Texture {
     const gl = Game.graphics.gl
     const tex = gl.createTexture()
@@ -124,6 +128,7 @@ export class Texture {
     return newTex
   }
 
+  /** Creates a texture from an array of pixel data */
   static createFromData(
     data: number[],
     width: number,

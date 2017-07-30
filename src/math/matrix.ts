@@ -1,7 +1,7 @@
 import { Vec2 } from './vec2'
 
 /**
- * A 3x3 Matrix
+ * A 3x3 Matrix used for 2D transformations.
  * 
  * ┌a, c, tx┐
  * │b, d, ty│
@@ -10,6 +10,7 @@ import { Vec2 } from './vec2'
  * @class Matrix
  */
 export class Matrix {
+  // Matrix values
   a = 1
   b = 0
   c = 0
@@ -33,6 +34,7 @@ export class Matrix {
     this.ty = ty
   }
 
+  /** Reset matrix to identity matrix values */
   identity(): Matrix {
     this.a = 1
     this.b = 0
@@ -43,6 +45,7 @@ export class Matrix {
     return this
   }
 
+  /** Scale matrix in x and y directions by scalar or vector */
   scale(sx: number | Vec2, sy?: number): Matrix {
     if (sx instanceof Vec2) {
       sy = sx.y
@@ -60,6 +63,7 @@ export class Matrix {
 
   // TODO: Implement global engine options to use rad/deg/turn
   // turns are #1
+  /** Rotate matrix by given radians */
   rotate(rad: number): Matrix {
     const sin = Math.sin(rad)
     const cos = Math.cos(rad)
@@ -75,10 +79,19 @@ export class Matrix {
     return this
   }
 
+  /**
+   * Translates the matrix.
+   * 
+   * If one argument is provided, matrix will by translated by the
+   * x and y values of the provided Vec2. Otherwise, arguments are
+   * x and y scalar values to move matrix by.
+   */
   translate(dx: number | Vec2, dy?: number): Matrix {
     if (dx instanceof Vec2) {
       dy = dx.y
       dx = dx.x
+    } else if (dy === undefined) {
+      dy = dx
     }
 
     this.tx += this.a * dx + this.c * dy
@@ -87,6 +100,9 @@ export class Matrix {
     return this
   }
 
+  /**
+   * Copies values of other matrix to this one
+   */
   copy(other: Matrix): Matrix {
     this.a = other.a
     this.b = other.b
@@ -97,20 +113,32 @@ export class Matrix {
     return this
   }
 
+  /**
+   * Create new matrix with values identical to this one
+   */
   clone(): Matrix {
     return new Matrix(this.a, this.b, this.c, this.d, this.tx, this.ty)
   }
 
+  /**
+   * Represent matrix as a flat array in column-major order
+   */
   toArray(): number[] {
     return [this.a, this.b, 0, this.c, this.d, 0, this.tx, this.ty, 1]
   }
 
+  /**
+   * Display matrix values in formatted way
+   */
   toString(): string {
     return `┌${this.a} ${this.c} ${this.tx}┐
 │${this.b} ${this.d} ${this.ty}│
 └0 0 1┘`
   }
 
+  /**
+   * Derives position, scale, skew, and rotation values from given matrix.
+   */
   decompose(): { position: Vec2; scale: Vec2; skew: Vec2; rotation: number } {
     const transform: {
       position: Vec2
@@ -158,6 +186,9 @@ export class Matrix {
     return transform
   }
 
+  /**
+   * Multiplies given vector by this matrix to transform it
+   */
   transformPoint(v: Vec2): Vec2 {
     const x: number = this.a * v.x + this.c * v.y + this.tx
     const y: number = this.b * v.x + this.d * v.y + this.ty
@@ -165,6 +196,10 @@ export class Matrix {
     return new Vec2(x, y)
   }
 
+  /**
+   * Creates a new matrix that is the
+   * mathematical inverse of this one
+   */
   inverse(): Matrix {
     const det = this.a * this.d - this.b * this.c
 
@@ -182,10 +217,10 @@ export class Matrix {
     )
   }
 
-  // -----------------------
-  // Private mutator methods
-  // -----------------------
-  private reset(
+  /**
+   * Set matrix values
+   */
+  reset(
     a: number,
     b: number,
     c: number,
@@ -203,6 +238,9 @@ export class Matrix {
     return this
   }
 
+  /**
+   * Multiply this matrix by another
+   */
   multiply(m: Matrix): Matrix {
     const a: number = this.a * m.a + this.c * m.b
     const b: number = this.b * m.a + this.d * m.b

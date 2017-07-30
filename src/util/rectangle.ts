@@ -1,3 +1,7 @@
+/**
+ * It's a rectangle. It has an x, y, width, and height.
+ * What more could you ask for?
+ */
 export class Rectangle {
   x: number
   y: number
@@ -24,6 +28,7 @@ export class Rectangle {
     this.height = h
   }
 
+  /** Set the values of the rectangle */
   set(x: number, y: number, w: number, h: number): Rectangle {
     this.x = x
     this.y = y
@@ -32,6 +37,12 @@ export class Rectangle {
     return this
   }
 
+  /**
+   * Crop the given rectangle using this rectangle.
+   * 
+   * Will reduce the dimensions of the given rectangle
+   * to fit inside the bounds of this one.
+   */
   crop(r: Rectangle): Rectangle {
     if (r.x < this.x) {
       r.width += r.x - this.x
@@ -64,6 +75,7 @@ export class Rectangle {
     return r
   }
 
+  /** Sets this rectangle to have same values as given rectangle */
   copy(from: Rectangle): Rectangle {
     this.x = from.x
     this.y = from.y
@@ -72,10 +84,12 @@ export class Rectangle {
     return this
   }
 
+  /** Create a new rectangle identical to this one */
   clone(): Rectangle {
     return new Rectangle().copy(this)
   }
 
+  /** Display the dimensions of this rectangle formatted */
   toString(): string {
     return `[ ${this.x}, ${this.y}, ${this.width}, ${this.height} ]`
   }

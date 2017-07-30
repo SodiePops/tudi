@@ -4,13 +4,8 @@ import { Uniform, UniformType } from './uniform'
 import { Attribute, AttributeType } from './attribute'
 
 /**
- * frag
- * vert
- * attributes
- * uniforms []
- * 
- * @export
- * @class Shader
+ * A WebGL shader. Consists of a vertex and fragment
+ * shader, and uniform and attribute values.
  */
 export class Shader {
   name: string
@@ -21,6 +16,11 @@ export class Shader {
   attributes: Attribute[]
   uniformsByName: { [key: string]: Uniform } = {}
 
+  /**
+   * An array of RenderInstructions. Each update loop,
+   * this array is emptied and each instruction is rendered
+   * by the camera(s) in the scene.
+   */
   renderQueue: RenderInstruction[] = []
 
   constructor(data: ShaderData) {
@@ -82,6 +82,7 @@ export class Shader {
     })
   }
 
+  /** Sets a shader uniform value */
   set(name: string, value: any) {
     if (!this.uniformsByName[name]) {
       throw new Error(`Uniform ${name} does not exist on this shader.`)
@@ -90,6 +91,7 @@ export class Shader {
   }
 }
 
+/** A plain object used to create and compile a shader */
 export interface ShaderData {
   name: string
   frag: string

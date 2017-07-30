@@ -1,6 +1,9 @@
 import { Texture } from './texture'
 import { Game } from '../game'
 
+/**
+ * A RenderTarget for the engine to render image data into
+ */
 export class RenderTarget {
   texture: Texture
   frameBuffer: WebGLFramebuffer
@@ -29,6 +32,9 @@ export class RenderTarget {
     this.texcoordBuffer = texcoord
   }
 
+  /**
+   * Cleans up buffers to delete this RenderTarget
+   */
   dispose() {
     this.texture.dispose()
     this.texture = null
@@ -44,6 +50,9 @@ export class RenderTarget {
     this.colorBuffer = null
   }
 
+  /**
+   * Create a new RenderTarget with given width and height
+   */
   static create(width: number, height: number): RenderTarget {
     const gl = Game.graphics.gl
     const frameBuffer = gl.createFramebuffer()

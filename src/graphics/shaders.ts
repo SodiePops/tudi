@@ -2,17 +2,23 @@ import { Shader, ShaderData } from './shader'
 import { UniformType } from './uniform'
 import { AttributeType } from './attribute'
 
+/** Default shaders used by the engine */
 export class Shaders {
   static texture: Shader
   static solid: Shader
   static primitive: Shader
 
+  /** Compiles the default shaders */
   static init() {
     Shaders.texture = new Shader(Shaders.shaderSources.texture)
     Shaders.solid = new Shader(Shaders.shaderSources.solid)
     Shaders.primitive = new Shader(Shaders.shaderSources.primitive)
   }
 
+  /**
+   * Dictionary of source ShaderData used to compile
+   * default shaders
+   */
   static shaderSources: { [name: string]: ShaderData } = {
     texture: {
       name: 'texture',
@@ -51,6 +57,7 @@ export class Shaders {
         { name: 'a_color', type: AttributeType.Color },
       ],
     },
+
     solid: {
       name: 'solid',
       vert: `
@@ -88,6 +95,7 @@ export class Shaders {
         { name: 'a_color', type: AttributeType.Color },
       ],
     },
+
     primitive: {
       name: 'primitive',
       vert: `

@@ -1,6 +1,9 @@
 import { Shader } from './shader'
 import { Matrix, Vec2 } from '../math'
 
+/**
+ * A class representing a WebGL shader uniform value
+ */
 export class Uniform {
   private _shader: Shader
   private _value: any
@@ -35,6 +38,9 @@ export class Uniform {
   }
 }
 
+/**
+ * Enum of valid WebGL uniform types
+ */
 export enum UniformType {
   float = 'float',
   vec2 = 'vec2',
@@ -70,11 +76,20 @@ export enum UniformType {
   bvec4 = 'bvec4',
 }
 
+/**
+ * Function that calls the appropriate WebGL methods to
+ * set the value of a uniform.
+ */
 export type SetUniformValueFunc = (
   gl: WebGLRenderingContext,
   location: WebGLUniformLocation,
   value: any
 ) => void
+
+/**
+ * A dictionary that maps WebGL uniform types to a function for
+ * setting the value of that uniform.
+ */
 export const setUniformValue: { [type: string]: SetUniformValueFunc } = {
   [UniformType.float]: (gl, location, value: number) => {
     gl.uniform1f(location, value)

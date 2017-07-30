@@ -1,3 +1,6 @@
+/**
+ * Data object for a WebGL shader attribute
+ */
 export class Attribute {
   name: string
   type: AttributeType
@@ -9,6 +12,9 @@ export class Attribute {
   }
 }
 
+/**
+ * Enum of WebGL shader attribute types
+ */
 export enum AttributeType {
   Position = 'position',
   Texcoord = 'texcoord',

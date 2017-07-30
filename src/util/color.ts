@@ -1,3 +1,7 @@
+/**
+ * Class representing a color in rgba format. Contains
+ * methods for working with colors.
+ */
 export class Color {
   r: number = 0
   g: number = 0
@@ -15,6 +19,7 @@ export class Color {
     this.a = a
   }
 
+  /** Sets color values */
   set(r: number, g: number, b: number, a: number): Color {
     this.r = r
     this.g = g
@@ -23,6 +28,7 @@ export class Color {
     return this
   }
 
+  /** Set color values to those of given color */
   copy(color: Color): Color {
     this.r = color.r
     this.g = color.g
@@ -31,6 +37,7 @@ export class Color {
     return this
   }
 
+  /** Set this color to be a blend between the two given colors. */
   lerp(a: Color, b: Color, p: number): Color {
     this.r = a.r + (b.r - a.r) * p
     this.g = a.g + (b.g - a.g) * p
@@ -39,14 +46,17 @@ export class Color {
     return this
   }
 
+  /** Create a new color with identical values to this one */
   clone(): Color {
     return new Color().copy(this)
   }
 
+  /** Multiply the alpha of this color */
   mult(alpha: number): Color {
     return this.set(this.r, this.g, this.b, this.a * alpha)
   }
 
+  // Pre-defined colors
   static white = new Color(1, 1, 1, 1)
   static black = new Color(0, 0, 0, 1)
   static red = new Color(1, 0, 0, 1)
