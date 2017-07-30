@@ -21,6 +21,7 @@ export default class Entity {
   // The reason destroy$ is a Subject and not a Stream is so we can
   // imperatively push a destroy event on demand
   destroy$: Subject<boolean>
+  remove$: Subject<string>
   update$: most.Stream<number>
   actions: ActionChannel = new ActionChannel()
   readonly components: { [name: string]: Component } = {}
@@ -58,15 +59,16 @@ export default class Entity {
     child.setup()
   }
 
-  removeChild(id: string): Entity | void {
+  removeChild(id: string): Entity {
     if (this.children[id]) {
       const child = this.children[id]
       delete this.children[id]
       return child
     }
+    return null
   }
 
-  getChild(idOrName: string): Entity | void {
+  getChild(idOrName: string): Entity {
     if (this.children[idOrName]) {
       return this.children[idOrName]
     } else {
@@ -76,6 +78,7 @@ export default class Entity {
         }
       }
     }
+    return null
   }
 
   /**
@@ -89,6 +92,7 @@ export default class Entity {
   }
 
   removeComponent(componentName: string): Component | undefined {
+    this.remove$.next(componentName)
     const removedComponent: Component = this.components[componentName]
     delete this.components[componentName]
     return removedComponent
@@ -111,7 +115,7 @@ export default class Entity {
       this.destroy$ = _async<boolean>()
       this.update$ = this.scene.update$.takeUntil(this.destroy$)
     }
-
+    this.remove$ = _async<string>()
     this.scene.entityCount++
     this.transform.entity = this
     this.transform.setup()
