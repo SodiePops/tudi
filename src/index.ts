@@ -6,6 +6,6 @@ import { Scene } from './scene'
 import * as Keyboard from './util/keyboard'
 import * as Mouse from './util/mouse'
 import * as Update from './util/update'
-import { Color } from './graphics/color'
+import { Color } from './util/color'
 
 export { Game, Scene, Entity, Components, Keyboard, Mouse, Math, Update, Color }

@@ -1,8 +1,8 @@
 import { Game } from '../game'
-import { Rectangle } from '../graphics/rectangle'
+import { Rectangle } from '../util/rectangle'
 import { Matrix, Vec2 } from '../math'
 import { Component } from './component'
-import { Color } from '../graphics/color'
+import { Color } from '../util/color'
 import { RenderTarget } from '../graphics/renderTarget'
 
 /**

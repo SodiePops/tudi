@@ -2,7 +2,7 @@ import { Component } from './component'
 import { Shader } from '../graphics/shader'
 import { Shaders } from '../graphics/shaders'
 import { RenderInstructionType } from '../graphics'
-import { Color } from '../graphics/color'
+import { Color } from '../util/color'
 
 export class OutlineComponent extends Component {
   name = 'outline'

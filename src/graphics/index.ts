@@ -1,13 +1,13 @@
-import { Game } from './game'
-import { Shader } from './graphics/shader'
-import { RenderTarget } from './graphics/renderTarget'
-import { Texture } from './graphics/texture'
-import { Rectangle } from './graphics/rectangle'
-import { Color } from './graphics/color'
-import { UniformType, setUniformValue } from './graphics/uniform'
-import { AttributeType } from './graphics/attribute'
-import { Shaders } from './graphics/shaders'
-import { Matrix, Vec2 } from './math'
+import { Game } from '../game'
+import { Shader } from './shader'
+import { RenderTarget } from './renderTarget'
+import { Texture } from './texture'
+import { Rectangle } from '../util/rectangle'
+import { Color } from '../util/color'
+import { UniformType, setUniformValue } from './uniform'
+import { AttributeType } from './attribute'
+import { Shaders } from './shaders'
+import { Matrix, Vec2 } from '../math'
 
 export interface BlendMode { source: number; dest: number }
 const BlendModes: { [name: string]: BlendMode } = {}

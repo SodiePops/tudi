@@ -1,5 +1,5 @@
 import { Game } from '../game'
-import { Rectangle } from './rectangle'
+import { Rectangle } from '../util/rectangle'
 import { Vec2 } from '../math'
 
 export class Texture {
