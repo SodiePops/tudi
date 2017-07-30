@@ -10,31 +10,16 @@ import RenderTarget from '../Graphics/RenderTarget'
  */
 export class Camera extends Component {
   name = 'camera'
-
-  // TODO: Replace this with Transform
-  position = new Vec2()
-  origin = new Vec2()
-  scale = new Vec2(1, 1)
-  rotation = 0
-
+  frameCount: number = 0
   target: RenderTarget
   clearColor: Color = new Color(0, 0, 0, 0)
   shaderUniformName: string = 'matrix'
 
-  private _matrix = Matrix.IDENTITY()
-
-  private get internal(): Matrix {
-    return Matrix.MULTIPLY(
-      Matrix.TRANSLATE(this.origin),
-      Matrix.ROTATE(this.rotation),
-      Matrix.SCALE(this.scale),
-      Matrix.TRANSLATE(Vec2.MULT(this.position, -1))
-    )
-  }
-
+  private _matrix: Matrix = Matrix.IDENTITY()
   get matrix(): Matrix {
-    this._matrix = Matrix.MULTIPLY(Game.graphics.orthographic, this.internal)
     return this._matrix
+      .copy(Game.graphics.orthographic)
+      .multiply(this.entity.transform.worldTransform)
   }
 
   get mouse(): Vec2 {
@@ -76,11 +61,9 @@ export class Camera extends Component {
     } else {
       Game.graphics.setRenderTarget(Game.graphics.buffer)
     }
-
     for (const shader of Game.shaders) {
       Game.graphics.shader = shader
       Game.graphics.shader.set(this.shaderUniformName, this.matrix)
-
       // TODO: Use camera matrix to transform draw instructions?
       for (const instruction of shader.renderQueue) {
         Game.graphics.draw(instruction)
@@ -89,7 +72,7 @@ export class Camera extends Component {
   }
 
   private getExtents() {
-    const inverse = this.internal.inverse()
+    const inverse = this.entity.transform.worldTransform.inverse()
     this.extentsA = inverse.transformPoint(new Vec2(0, 0))
     this.extentsB = inverse.transformPoint(new Vec2(Game.width, 0))
     this.extentsC = inverse.transformPoint(new Vec2(0, Game.height))
