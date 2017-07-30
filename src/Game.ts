@@ -1,10 +1,12 @@
-// import * as PIXI from 'pixi.js'
 import * as most from 'most'
 import Scene from './Scene'
 import * as Update from './Util/Update'
 import Graphics from './Graphics'
 import { Shaders } from './Graphics/shaders'
 import { Shader } from './Graphics/Shader'
+import Texture from './Graphics/Texture'
+import { Sound } from './assets/sound'
+import { Vec2 } from './Math'
 import { laslo, Assets, AssetInfo } from './assets/laslo'
 
 /**
@@ -17,27 +19,29 @@ class Game {
   height: number
   root: HTMLElement
   graphics: Graphics
-  assets: Assets = {
+  assets: Assets<string, any, Blob, Texture, Sound> = {
     text: {},
     json: {},
     binary: {},
     image: {},
     audio: {},
   }
+  config: GameConfig
   shaders: Shader[] = []
   update$: most.Stream<number>
-  // private renderer: PIXI.CanvasRenderer | PIXI.WebGLRenderer
   private scene: Scene
   private isPlaying = false
 
   async start(
     width: number,
     height: number,
+    config: GameConfig = {},
     targetId?: string,
     scene?: Scene
   ): Promise<void> {
-    this.scene = scene || new Scene({}, [])
+    this.scene = scene
     this.root = targetId ? document.getElementById(targetId) : document.body
+    this.config = config
     this.graphics = new Graphics()
     this.graphics.load()
     this.resize(width, height)
@@ -48,8 +52,23 @@ class Game {
     await this.setup()
   }
 
+  async goto(scene: Scene) {
+    if (this.scene) {
+      this.scene.destroy()
+    }
+
+    this.scene = scene
+    await this.scene.setup()
+  }
+
   async loadAssets(assets: (string | AssetInfo)[]) {
-    const loaded = await laslo(assets)
+    const opts = {
+      parsers: {
+        image: Texture.create,
+        audio: Sound.create,
+      },
+    }
+    const loaded = await laslo(assets, opts)
 
     this.assets.text = { ...this.assets.text, ...loaded.text }
     this.assets.json = { ...this.assets.json, ...loaded.json }
@@ -59,15 +78,16 @@ class Game {
   }
 
   private async setup(): Promise<void> {
-    this.update$ = Update.update$.map(evt => {
-      this.graphics.finalize()
+    this.update$ = Update.update$.map(evt => evt.deltaTime)
+    this.update$.observe(() => {
       this.graphics.update()
+      this.graphics.finalize()
       this.graphics.reset()
-
-      return evt.deltaTime
     })
 
-    await this.scene.setup()
+    if (this.scene) {
+      await this.scene.setup()
+    }
 
     return
   }
@@ -76,6 +96,12 @@ class Game {
     this.width = width
     this.height = height
     this.graphics.resize()
+  }
+}
+
+export interface GameConfig {
+  textures?: {
+    origin?: Vec2
   }
 }
 
