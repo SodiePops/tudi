@@ -1,18 +1,18 @@
-import { Game } from './Game'
-import { Shader } from './Graphics/Shader'
-import RenderTarget from './Graphics/RenderTarget'
-import Texture from './Graphics/Texture'
-import Rectangle from './Graphics/Rectangle'
-import Color from './Graphics/Color'
-import { UniformType, setUniformValue } from './Graphics/Uniform'
-import { AttributeType } from './Graphics/Attribute'
-import { Shaders } from './Graphics/shaders'
-import { Matrix, Vec2 } from './Math'
+import { Game } from './game'
+import { Shader } from './graphics/shader'
+import { RenderTarget } from './graphics/renderTarget'
+import { Texture } from './graphics/texture'
+import { Rectangle } from './graphics/rectangle'
+import { Color } from './graphics/color'
+import { UniformType, setUniformValue } from './graphics/uniform'
+import { AttributeType } from './graphics/attribute'
+import { Shaders } from './graphics/shaders'
+import { Matrix, Vec2 } from './math'
 
 export interface BlendMode { source: number; dest: number }
 const BlendModes: { [name: string]: BlendMode } = {}
 
-export default class Graphics {
+export class Graphics {
   canvas: HTMLCanvasElement | null
   gl: WebGLRenderingContext
   buffer: RenderTarget | null

@@ -1,10 +1,10 @@
-import { Component } from './Component'
-import { Shader } from '../Graphics/Shader'
-import { Shaders } from '../Graphics/shaders'
-import Texture from '../Graphics/Texture'
-import { RenderInstructionType } from '../Graphics'
-import { Game } from '../Game'
-import { Vec2 } from '../Math'
+import { Component } from './component'
+import { Shader } from '../graphics/shader'
+import { Shaders } from '../graphics/shaders'
+import { Texture } from '../graphics/texture'
+import { RenderInstructionType } from '../graphics'
+import { Game } from '../game'
+import { Vec2 } from '../math'
 
 export class SpriteComponent extends Component {
   name = 'sprite'

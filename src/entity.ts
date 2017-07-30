@@ -1,8 +1,9 @@
-import { Component, Transform, TransformInitalizer } from './Components'
-import Scene from './Scene'
-import ActionChannel from './Util/ActionChannel'
 import { Subject, async as _async } from 'most-subject' // Why would they use a keyword??
 import * as most from 'most'
+
+import { Component, Transform, TransformInitalizer } from './components'
+import { Scene } from './scene'
+import { ActionChannel } from './util/actionChannel'
 
 /**
  * An Entity exists in the game world and has
@@ -12,7 +13,7 @@ import * as most from 'most'
  * @export
  * @class Entity
  */
-export default class Entity {
+export class Entity {
   name: string
   id: string
   scene: Scene

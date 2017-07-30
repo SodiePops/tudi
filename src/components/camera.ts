@@ -1,9 +1,9 @@
-import { Game } from '../Game'
-import Rectangle from '../Graphics/Rectangle'
-import { Matrix, Vec2 } from '../Math'
-import { Component } from './Component'
-import Color from '../Graphics/Color'
-import RenderTarget from '../Graphics/RenderTarget'
+import { Game } from '../game'
+import { Rectangle } from '../graphics/rectangle'
+import { Matrix, Vec2 } from '../math'
+import { Component } from './component'
+import { Color } from '../graphics/color'
+import { RenderTarget } from '../graphics/renderTarget'
 
 /**
  * TODO: Document this

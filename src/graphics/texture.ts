@@ -1,9 +1,8 @@
-import { Game } from '../Game'
-import Rectangle from './Rectangle'
-import { Vec2 } from '../Math'
-// import Color from './Color'
+import { Game } from '../game'
+import { Rectangle } from './rectangle'
+import { Vec2 } from '../math'
 
-export default class Texture {
+export class Texture {
   /** The actual WebGL Texture object */
   webGLTexture: WebGLTexture
   /** The path to the image the Texture was created from  */

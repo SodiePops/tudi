@@ -1,5 +1,5 @@
-import { Component } from './Component'
-import { Vec2, Matrix } from '../Math'
+import { Component } from './component'
+import { Vec2, Matrix } from '../math'
 
 /**
  * Representing a set of 2D transformations using a matrix

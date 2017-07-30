@@ -1,12 +1,13 @@
 import * as most from 'most'
-import Scene from './Scene'
-import * as Update from './Util/Update'
-import Graphics from './Graphics'
-import { Shaders } from './Graphics/shaders'
-import { Shader } from './Graphics/Shader'
-import Texture from './Graphics/Texture'
+
+import { Scene } from './scene'
+import * as Update from './util/update'
+import { Graphics } from './graphics'
+import { Shaders } from './graphics/shaders'
+import { Shader } from './graphics/shader'
+import { Texture } from './graphics/texture'
 import { Sound } from './assets/sound'
-import { Vec2 } from './Math'
+import { Vec2 } from './math'
 import { laslo, Assets, AssetInfo } from './assets/laslo'
 
 /**

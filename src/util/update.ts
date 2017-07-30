@@ -1,5 +1,6 @@
 import * as most from 'most'
 import { create } from '@most/create'
+
 /**
  * Creates a stream of update events using requestAnimationFrame
  */

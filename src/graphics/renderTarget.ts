@@ -1,7 +1,7 @@
-import Texture from './Texture'
-import { Game } from '../Game'
+import { Texture } from './texture'
+import { Game } from '../game'
 
-export default class RenderTarget {
+export class RenderTarget {
   texture: Texture
   frameBuffer: WebGLFramebuffer
   vertexBuffer: WebGLBuffer

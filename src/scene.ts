@@ -1,8 +1,9 @@
-import { Game } from './Game'
-import Entity from './Entity'
-import ActionChannel from './Util/ActionChannel'
-import { Camera } from './Components/camera'
 import * as most from 'most'
+
+import { Game } from './game'
+import { Entity } from './entity'
+import { ActionChannel } from './util/actionChannel'
+import { Camera } from './components/camera'
 
 /**
  * A Scene is the root of a hierarchy of entities.
@@ -10,7 +11,7 @@ import * as most from 'most'
  * events through the scene hierarchy. It could be
  * thought of as a "level".
  */
-export default class Scene {
+export class Scene {
   mainCamera: Camera = null
   cameras: Camera[] = []
   entityCount: number

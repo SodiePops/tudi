@@ -1,7 +1,7 @@
-import { Game } from '../Game'
-import { RenderInstruction } from '../Graphics'
-import Uniform, { UniformType } from './Uniform'
-import Attribute, { AttributeType } from './Attribute'
+import { Game } from '../game'
+import { RenderInstruction } from '../graphics'
+import { Uniform, UniformType } from './uniform'
+import { Attribute, AttributeType } from './attribute'
 
 /**
  * frag

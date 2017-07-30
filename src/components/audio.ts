@@ -1,6 +1,6 @@
-import { Component } from './Component'
+import { Component } from './component'
 import { Sound } from '../assets/sound'
-import { Game } from '../Game'
+import { Game } from '../game'
 
 /**
  * Component for working with sounds

@@ -1,7 +1,7 @@
-import { Shader } from './Shader'
-import { Matrix, Vec2 } from '../Math'
+import { Shader } from './shader'
+import { Matrix, Vec2 } from '../math'
 
-export default class Uniform {
+export class Uniform {
   private _shader: Shader
   private _value: any
 

@@ -1,4 +1,4 @@
-export default class Attribute {
+export class Attribute {
   name: string
   type: AttributeType
   attribute: number

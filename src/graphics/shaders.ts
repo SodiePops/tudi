@@ -1,6 +1,6 @@
-import { Shader, ShaderData } from './Shader'
-import { UniformType } from './Uniform'
-import { AttributeType } from './Attribute'
+import { Shader, ShaderData } from './shader'
+import { UniformType } from './uniform'
+import { AttributeType } from './attribute'
 
 export class Shaders {
   static texture: Shader

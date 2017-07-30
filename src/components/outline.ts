@@ -1,9 +1,8 @@
-import { Component } from './Component'
-import { Shader } from '../Graphics/Shader'
-import { Shaders } from '../Graphics/shaders'
-import { RenderInstructionType } from '../Graphics'
-// import { Game } from '../Game'
-import Color from '../Graphics/Color'
+import { Component } from './component'
+import { Shader } from '../graphics/shader'
+import { Shaders } from '../graphics/shaders'
+import { RenderInstructionType } from '../graphics'
+import { Color } from '../graphics/color'
 
 export class OutlineComponent extends Component {
   name = 'outline'

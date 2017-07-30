@@ -9,7 +9,7 @@ export interface Action<T> {
 /**
  * Provides a source of actions to observe or push to
  */
-export default class ActionChannel {
+export class ActionChannel {
   action$: Subject<Action<any>>
 
   constructor() {

@@ -1,4 +1,4 @@
-import Entity from '../Entity'
+import { Entity } from '../entity'
 
 /**
  * A Component has state and/or lifetime methods
