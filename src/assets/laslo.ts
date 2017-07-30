@@ -1,12 +1,12 @@
 /**
  * A container holding all loaded assets
  */
-export interface Assets {
-  text: { [name: string]: string }
-  json: { [name: string]: any }
-  binary: { [name: string]: Blob }
-  image: { [name: string]: HTMLImageElement }
-  audio: { [name: string]: HTMLAudioElement }
+export interface Assets<Text, Json, Binary, Img, Audio> {
+  text: { [name: string]: Text }
+  json: { [name: string]: Json }
+  binary: { [name: string]: Binary }
+  image: { [name: string]: Img }
+  audio: { [name: string]: Audio }
 }
 
 /**
@@ -25,6 +25,20 @@ export interface AssetInfo {
    * If not indicated, this will be set to `path`
    */
   name?: string
+  /**
+   * A dictionary of options to be used by custom parsers
+   */
+  options?: { [key: string]: any }
+}
+
+export interface LasloOptions<Text, Json, Binary, Img, Audio> {
+  parsers?: {
+    text?: (s: string, options?: { [key: string]: any }) => Text
+    json?: (j: any, options?: { [key: string]: any }) => Json
+    binary?: (b: Blob, options?: { [key: string]: any }) => Binary
+    image?: (i: HTMLImageElement, options?: { [key: string]: any }) => Img
+    audio?: (a: HTMLAudioElement, options?: { [key: string]: any }) => Audio
+  }
 }
 
 export enum AssetType {
@@ -47,36 +61,36 @@ export const matchers = [
  * A map from a AssetType to an async function that
  * loads assets of that type
  */
-export const loaders: { [key: string]: (path: string) => Promise<any> } = {
-  [AssetType.text]: async path => {
+export const loaders = {
+  text: async (path: string) => {
     const response = await fetch(path)
     return response.text()
   },
 
-  [AssetType.json]: async path => {
+  json: async (path: string) => {
     const response = await fetch(path)
     return response.json()
   },
 
-  [AssetType.binary]: async path => {
+  binary: async (path: string) => {
     const response = await fetch(path)
     return response.blob()
   },
 
-  [AssetType.image]: async path => {
-    const img = new Image()
-    const response = await fetch(path)
-    const blob = await response.blob()
-    img.src = URL.createObjectURL(blob)
-    return img
+  image: async (path: string) => {
+    return new Promise<HTMLImageElement>(resolve => {
+      const img = new Image()
+      img.addEventListener('load', () => resolve(img))
+      img.src = path
+    })
   },
 
-  [AssetType.audio]: async path => {
-    const audio = new Audio()
-    const response = await fetch(path)
-    const blob = await response.blob()
-    audio.src = URL.createObjectURL(blob)
-    return audio
+  audio: async (path: string) => {
+    return new Promise<HTMLAudioElement>(resolve => {
+      const audio = new Audio()
+      audio.addEventListener('loadeddata', () => resolve(audio))
+      audio.src = path
+    })
   },
 }
 
@@ -98,7 +112,16 @@ export const findAssetType = (path: string): AssetType => {
  * 
  * @param assets An array of file paths or AssetInfo objects to be loaded
  */
-export async function laslo(assets: (string | AssetInfo)[]) {
+export async function laslo<
+  Text = string,
+  Json = any,
+  Binary = Blob,
+  Img = HTMLImageElement,
+  Audio = HTMLAudioElement
+>(
+  assets: (string | AssetInfo)[],
+  options?: LasloOptions<Text, Json, Binary, Img, Audio>
+) {
   // Ensure that the assets passed in are all AssetInfo objects
   const as = assets.map(a => {
     if (typeof a === 'string') {
@@ -114,7 +137,7 @@ export async function laslo(assets: (string | AssetInfo)[]) {
     }
   })
 
-  const loaded: Assets = {
+  const loaded: Assets<Text, Json, Binary, Img, Audio> = {
     text: {},
     json: {},
     binary: {},
@@ -124,16 +147,67 @@ export async function laslo(assets: (string | AssetInfo)[]) {
 
   // Call the appropriate loader function on each asset
   for (const asset of as) {
-    const load = loaders[asset.type]
-    if (load) {
-      try {
-        ;(loaded as any)[asset.type][asset.name] = await load(asset.path)
-      } catch (error) {
-        throw new Error(
-          `aslo: error loading asset '${asset.name}'
-          ${error.message}`
-        )
+    try {
+      // TODO: This could probably be abstracted to be more DRY
+      switch (asset.type) {
+        case AssetType.text:
+          if (options && options.parsers && options.parsers.text) {
+            loaded.text[asset.name] = options.parsers.text(
+              await loaders.text(asset.path),
+              asset.options
+            )
+          } else {
+            ;(<any>loaded.text)[asset.name] = await loaders.text(asset.path)
+          }
+          break
+        case AssetType.json:
+          if (options && options.parsers && options.parsers.json) {
+            loaded.json[asset.name] = options.parsers.json(
+              await loaders.json(asset.path),
+              asset.options
+            )
+          } else {
+            ;(<any>loaded.json)[asset.name] = await loaders.json(asset.path)
+          }
+          break
+        case AssetType.binary:
+          if (options && options.parsers && options.parsers.binary) {
+            loaded.binary[asset.name] = options.parsers.binary(
+              await loaders.binary(asset.path),
+              asset.options
+            )
+          } else {
+            ;(<any>loaded.binary)[asset.name] = await loaders.binary(asset.path)
+          }
+          break
+        case AssetType.image:
+          if (options && options.parsers && options.parsers.image) {
+            loaded.image[asset.name] = options.parsers.image(
+              await loaders.image(asset.path),
+              asset.options
+            )
+          } else {
+            ;(<any>loaded.image)[asset.name] = await loaders.image(asset.path)
+          }
+          break
+        case AssetType.audio:
+          if (options && options.parsers && options.parsers.audio) {
+            loaded.audio[asset.name] = options.parsers.audio(
+              await loaders.audio(asset.path),
+              asset.options
+            )
+          } else {
+            ;(<any>loaded.audio)[asset.name] = await loaders.audio(asset.path)
+          }
+          break
+        default:
+          break
       }
+    } catch (error) {
+      throw new Error(
+        `laslo: error loading asset '${asset.name}'
+        ${error.message}`
+      )
     }
   }
 
