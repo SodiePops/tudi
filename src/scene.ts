@@ -70,6 +70,11 @@ export class Scene {
       entity.scene = this
       entity.setup()
     }
+
+    // Create a default camera entity if scene was started without one
+    if (!this.mainCamera) {
+      this.addEntity(Camera.createDefaultCameraEntity())
+    }
   }
 
   /**

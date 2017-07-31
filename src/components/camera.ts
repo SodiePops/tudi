@@ -3,6 +3,7 @@ import { Rectangle } from '../util/rectangle'
 import { Matrix, Vec2 } from '../math'
 import { Component } from './component'
 import { Color } from '../util/color'
+import { Entity } from '../entity'
 import { RenderTarget } from '../graphics/renderTarget'
 
 /**
@@ -69,6 +70,10 @@ export class Camera extends Component {
         Game.graphics.draw(instruction)
       }
     }
+  }
+
+  static createDefaultCameraEntity() {
+    return new Entity('camera', {}, [new Camera()], [])
   }
 
   private getExtents() {
