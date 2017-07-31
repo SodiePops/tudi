@@ -9,6 +9,57 @@ export interface Assets<Text, Json, Binary, Img, Audio> {
   audio: { [name: string]: Audio }
 }
 
+// TODO: Work on improving laslo to be more generic
+// I just can't figure out the types right now
+
+// export interface Loaders {
+//   [key: string]: Loader<any>
+// }
+
+// export interface Loader<T> {
+//   test: RegExp
+//   load: (res: Response) => T
+// }
+
+// export type Blah<T extends Loaders> = {
+//   [P in keyof T]: { [key: string]: T[P] }
+// }
+
+// export const laslo2 = (loaders: Loaders) => async (
+//   assets: (string | AssetInfo)[]
+// ) => {
+//   const foo: {[key: keyof Loaders]: any} = {}
+
+//   // Ensure that the assets passed in are all AssetInfo objects
+//   const as = assets.map(a => {
+//     if (typeof a === 'string') {
+//       return {
+//         path: a,
+//         name: a,
+//       }
+//     } else {
+//       if (!a.name) a.name = a.path
+//       return a
+//     }
+//   })
+
+//   for (const asset of as) {
+//     for (const key in loaders) {
+//       const loader = loaders[key]
+//       if (loader.test.test(asset.path)) {
+//         const response = await fetch(asset.path)
+//         const loaded = await loader.load(response)
+//         if (!foo[key]) {
+//           const map: { [key: string]: typeof loaded } = {}
+//           foo[key] = map
+//         }
+//         foo[key][asset.name] = await loader.load(response)
+//         break
+//       }
+//     }
+//   }
+// }
+
 /**
  * Information necessary to load an asset
  */
@@ -33,11 +84,20 @@ export interface AssetInfo {
 
 export interface LasloOptions<Text, Json, Binary, Img, Audio> {
   parsers?: {
-    text?: (s: string, options?: { [key: string]: any }) => Text
-    json?: (j: any, options?: { [key: string]: any }) => Json
-    binary?: (b: Blob, options?: { [key: string]: any }) => Binary
-    image?: (i: HTMLImageElement, options?: { [key: string]: any }) => Img
-    audio?: (a: HTMLAudioElement, options?: { [key: string]: any }) => Audio
+    text?: (s: string, options?: { [key: string]: any }) => Text | Promise<Text>
+    json?: (j: any, options?: { [key: string]: any }) => Json | Promise<Json>
+    binary?: (
+      b: Blob,
+      options?: { [key: string]: any }
+    ) => Binary | Promise<Binary>
+    image?: (
+      i: HTMLImageElement,
+      options?: { [key: string]: any }
+    ) => Img | Promise<Img>
+    audio?: (
+      a: ArrayBuffer,
+      options?: { [key: string]: any }
+    ) => Audio | Promise<Audio>
   }
 }
 
@@ -86,11 +146,13 @@ export const loaders = {
   },
 
   audio: async (path: string) => {
-    return new Promise<HTMLAudioElement>(resolve => {
-      const audio = new Audio()
-      audio.addEventListener('loadeddata', () => resolve(audio))
-      audio.src = path
-    })
+    // return new Promise<HTMLAudioElement>(resolve => {
+    //   const audio = new Audio()
+    //   audio.addEventListener('loadeddata', () => resolve(audio))
+    //   audio.src = path
+    // })
+    const response = await fetch(path)
+    return response.arrayBuffer()
   },
 }
 
@@ -152,7 +214,7 @@ export async function laslo<
       switch (asset.type) {
         case AssetType.text:
           if (options && options.parsers && options.parsers.text) {
-            loaded.text[asset.name] = options.parsers.text(
+            loaded.text[asset.name] = await options.parsers.text(
               await loaders.text(asset.path),
               asset.options
             )
@@ -162,7 +224,7 @@ export async function laslo<
           break
         case AssetType.json:
           if (options && options.parsers && options.parsers.json) {
-            loaded.json[asset.name] = options.parsers.json(
+            loaded.json[asset.name] = await options.parsers.json(
               await loaders.json(asset.path),
               asset.options
             )
@@ -172,7 +234,7 @@ export async function laslo<
           break
         case AssetType.binary:
           if (options && options.parsers && options.parsers.binary) {
-            loaded.binary[asset.name] = options.parsers.binary(
+            loaded.binary[asset.name] = await options.parsers.binary(
               await loaders.binary(asset.path),
               asset.options
             )
@@ -182,7 +244,7 @@ export async function laslo<
           break
         case AssetType.image:
           if (options && options.parsers && options.parsers.image) {
-            loaded.image[asset.name] = options.parsers.image(
+            loaded.image[asset.name] = await options.parsers.image(
               await loaders.image(asset.path),
               asset.options
             )
@@ -192,7 +254,7 @@ export async function laslo<
           break
         case AssetType.audio:
           if (options && options.parsers && options.parsers.audio) {
-            loaded.audio[asset.name] = options.parsers.audio(
+            loaded.audio[asset.name] = await options.parsers.audio(
               await loaders.audio(asset.path),
               asset.options
             )

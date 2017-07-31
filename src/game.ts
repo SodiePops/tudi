@@ -2,6 +2,7 @@ import * as most from 'most'
 
 import { Scene } from './scene'
 import * as Update from './util/update'
+import { Audio } from './audio'
 import { Graphics } from './graphics'
 import { Shaders } from './graphics/shaders'
 import { Shader } from './graphics/shader'
@@ -20,6 +21,7 @@ class Game {
   height: number
   root: HTMLElement
   graphics: Graphics
+  audio: Audio
   assets: Assets<string, any, Blob, Texture, Sound> = {
     text: {},
     json: {},
@@ -45,6 +47,7 @@ class Game {
     this.config = config
     this.graphics = new Graphics()
     this.graphics.load()
+    this.audio = new Audio()
     this.resize(width, height)
     Shaders.init()
     this.shaders = [Shaders.primitive, Shaders.solid, Shaders.texture]
@@ -66,7 +69,7 @@ class Game {
     const opts = {
       parsers: {
         image: Texture.create,
-        audio: Sound.create,
+        audio: this.audio.createSoundFromBuffer,
       },
     }
     const loaded = await laslo(assets, opts)
