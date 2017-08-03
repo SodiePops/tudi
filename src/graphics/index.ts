@@ -339,7 +339,7 @@ export class Graphics {
     }
   }
 
-  flush() {
+  flush(mode: number = this.gl.TRIANGLES) {
     if (this.vertices.length > 0) {
       for (const attr of this.currentShader.attributes) {
         switch (attr.type) {
@@ -410,7 +410,7 @@ export class Graphics {
             break
         }
       }
-      this.gl.drawArrays(this.gl.TRIANGLES, 0, this.vertices.length / 2)
+      this.gl.drawArrays(mode, 0, this.vertices.length / 2)
       this.drawCalls++
 
       this.vertices = []
@@ -550,55 +550,30 @@ export class Graphics {
   }
 
   quad(
-    posX: number,
-    posY: number,
-    width: number,
-    height: number,
-    color?: Color,
-    origin?: Vec2,
-    scale?: Vec2,
-    rotation?: number
+    a: Vec2,
+    b: Vec2,
+    c: Vec2,
+    d: Vec2,
+    colA: Color,
+    colB: Color,
+    colC: Color,
+    colD: Color
   ) {
-    const left = 0
-    const top = 0
-
-    this.topLeft.set(left, top)
-    this.topRight.set(left + width, top)
-    this.botLeft.set(left, top + height)
-    this.botRight.set(left + width, top + height)
-
-    if (origin && (origin.x !== 0 || origin.y !== 0)) {
-      this.topLeft.sub(origin)
-      this.topRight.sub(origin)
-      this.botLeft.sub(origin)
-      this.botRight.sub(origin)
+    if (this.shader && this.shader.sampler2D) {
+      this.setShaderTexture(this._pixel)
     }
 
-    if (scale && (scale.x !== 1 || scale.y !== 1)) {
-      this.topLeft.mult(scale)
-      this.topRight.mult(scale)
-      this.botLeft.mult(scale)
-      this.botRight.mult(scale)
-    }
+    if (!colB) colB = colA
+    if (!colC) colC = colA
+    if (!colD) colD = colA
 
-    if (rotation) {
-      const s = Math.sin(rotation)
-      const c = Math.cos(rotation)
-
-      this.topLeft.rotate(s, c)
-      this.topRight.rotate(s, c)
-      this.botLeft.rotate(s, c)
-      this.botRight.rotate(s, c)
-    }
-
-    const col = color || Color.white
-
-    this.push(posX + this.topLeft.x, posY + this.topLeft.y, 0, 0, col)
-    this.pushUnsafe(posX + this.topRight.x, posY + this.topRight.y, 0, 0, col)
-    this.pushUnsafe(posX + this.botRight.x, posY + this.botRight.y, 0, 0, col)
-    this.pushUnsafe(posX + this.topLeft.x, posY + this.topLeft.y, 0, 0, col)
-    this.pushUnsafe(posX + this.botRight.x, posY + this.botRight.y, 0, 0, col)
-    this.pushUnsafe(posX + this.botLeft.x, posY + this.botLeft.y, 0, 0, col)
+    const uv = this._pixelUVs
+    this.push(a.x, a.y, uv[0].x, uv[0].y, colA)
+    this.pushUnsafe(b.x, b.y, uv[1].x, uv[1].y, colB)
+    this.pushUnsafe(c.x, c.y, uv[2].x, uv[2].y, colC)
+    this.pushUnsafe(a.x, a.y, uv[0].x, uv[0].y, colA)
+    this.pushUnsafe(c.x, c.y, uv[2].x, uv[2].y, colC)
+    this.pushUnsafe(d.x, d.y, uv[3].x, uv[3].y, colD)
   }
 
   rect(x: number, y: number, width: number, height: number, color: Color) {
@@ -683,16 +658,7 @@ export class Graphics {
         )
         break
       case RenderInstructionType.QUAD:
-        this.quad(
-          ri.posX,
-          ri.posY,
-          ri.width,
-          ri.height,
-          ri.color,
-          ri.origin,
-          ri.scale,
-          ri.rotation
-        )
+        this.quad(ri.a, ri.b, ri.c, ri.d, ri.colA, ri.colB, ri.colC, ri.colD)
         break
       case RenderInstructionType.RECT:
         this.rect(ri.x, ri.y, ri.width, ri.height, ri.color)
@@ -734,14 +700,14 @@ export interface TextureInstruction {
 
 export interface QuadInstruction {
   type: RenderInstructionType.QUAD
-  posX: number
-  posY: number
-  width: number
-  height: number
-  color?: Color
-  origin?: Vec2
-  scale?: Vec2
-  rotation?: number
+  a: Vec2
+  b: Vec2
+  c: Vec2
+  d: Vec2
+  colA: Color
+  colB?: Color
+  colC?: Color
+  colD?: Color
 }
 
 export interface RectInstruction {
@@ -759,8 +725,8 @@ export interface TriangleInstruction {
   b: Vec2
   c: Vec2
   colA: Color
-  colB: Color
-  colC: Color
+  colB?: Color
+  colC?: Color
 }
 
 export interface CircleInstruction {

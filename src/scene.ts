@@ -4,6 +4,10 @@ import { Game } from './game'
 import { Entity } from './entity'
 import { ActionChannel } from './util/actionChannel'
 import { Camera } from './components/camera'
+import { Shaders } from './graphics/shaders'
+import { RenderInstructionType } from './graphics'
+import { Color } from './util/color'
+import { Vec2 } from './math'
 
 /**
  * A Scene is the root of a hierarchy of entities.
@@ -97,5 +101,72 @@ export class Scene {
    */
   async destroy() {
     this.update$ = null
+  }
+
+  drawRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    color: Color = Color.white
+  ) {
+    Shaders.primitive.renderQueue.push({
+      type: RenderInstructionType.RECT,
+      x,
+      y,
+      width,
+      height,
+      color,
+    })
+  }
+
+  drawHollowRect(
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    stroke: number,
+    color: Color = Color.white
+  ) {
+    Shaders.primitive.renderQueue.push({
+      type: RenderInstructionType.HOLLOWRECT,
+      x,
+      y,
+      width,
+      height,
+      stroke,
+      color,
+    })
+  }
+
+  drawQuad(a: Vec2, b: Vec2, c: Vec2, d: Vec2, color: Color = Color.white) {
+    Shaders.primitive.renderQueue.push({
+      type: RenderInstructionType.QUAD,
+      a,
+      b,
+      c,
+      d,
+      colA: color,
+    })
+  }
+
+  drawTriangle(a: Vec2, b: Vec2, c: Vec2, color: Color = Color.white) {
+    Shaders.primitive.renderQueue.push({
+      type: RenderInstructionType.TRIANGLE,
+      a,
+      b,
+      c,
+      colA: color,
+    })
+  }
+
+  drawCircle(pos: Vec2, rad: number, color: Color = Color.white) {
+    Shaders.primitive.renderQueue.push({
+      type: RenderInstructionType.CIRCLE,
+      pos,
+      rad,
+      steps: 20,
+      color,
+    })
   }
 }
