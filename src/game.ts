@@ -56,12 +56,19 @@ class Game {
     await this.setup()
   }
 
-  async goto(scene: Scene) {
+  async goto(scene: (() => Scene) | Scene) {
+    let s: Scene
+    if (typeof scene === 'function') {
+      s = scene()
+    } else {
+      s = scene
+    }
+
     if (this.scene) {
       this.scene.destroy()
     }
 
-    this.scene = scene
+    this.scene = s
     await this.scene.setup()
   }
 

@@ -38,6 +38,17 @@ export class Vec2 {
     return `<${this.x}, ${this.y}>`
   }
 
+  /** Rounds the x and y values to integers */
+  round(): this {
+    this.x = Math.round(this.x)
+    this.y = Math.round(this.y)
+    return this
+  }
+
+  static round(v: Vec2): Vec2 {
+    return new Vec2(Math.round(v.x), Math.round(v.y))
+  }
+
   /** Vector addition */
   add(other: Vec2): Vec2 {
     this.x += other.x
