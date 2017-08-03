@@ -29,7 +29,7 @@ export class Rectangle {
   }
 
   /** Set the values of the rectangle */
-  set(x: number, y: number, w: number, h: number): Rectangle {
+  set(x: number, y: number, w: number, h: number): this {
     this.x = x
     this.y = y
     this.width = w
@@ -76,7 +76,7 @@ export class Rectangle {
   }
 
   /** Sets this rectangle to have same values as given rectangle */
-  copy(from: Rectangle): Rectangle {
+  copy(from: Rectangle): this {
     this.x = from.x
     this.y = from.y
     this.width = from.width

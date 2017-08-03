@@ -20,7 +20,7 @@ export class Color {
   }
 
   /** Sets color values */
-  set(r: number, g: number, b: number, a: number): Color {
+  set(r: number, g: number, b: number, a: number): this {
     this.r = r
     this.g = g
     this.b = b
@@ -29,7 +29,7 @@ export class Color {
   }
 
   /** Set color values to those of given color */
-  copy(color: Color): Color {
+  copy(color: Color): this {
     this.r = color.r
     this.g = color.g
     this.b = color.b
@@ -38,7 +38,7 @@ export class Color {
   }
 
   /** Set this color to be a blend between the two given colors. */
-  lerp(a: Color, b: Color, p: number): Color {
+  lerp(a: Color, b: Color, p: number): this {
     this.r = a.r + (b.r - a.r) * p
     this.g = a.g + (b.g - a.g) * p
     this.b = a.b + (b.b - a.b) * p
@@ -52,7 +52,7 @@ export class Color {
   }
 
   /** Multiply the alpha of this color */
-  mult(alpha: number): Color {
+  mult(alpha: number): this {
     return this.set(this.r, this.g, this.b, this.a * alpha)
   }
 

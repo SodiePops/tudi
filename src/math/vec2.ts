@@ -11,7 +11,7 @@ export class Vec2 {
     this.y = y
   }
 
-  set(x: number, y: number): Vec2 {
+  set(x: number, y: number): this {
     this.x = x
     this.y = y
     return this
@@ -50,7 +50,7 @@ export class Vec2 {
   }
 
   /** Vector addition */
-  add(other: Vec2): Vec2 {
+  add(other: Vec2): this {
     this.x += other.x
     this.y += other.y
     return this
@@ -61,7 +61,7 @@ export class Vec2 {
   }
 
   /** Vector subtraction */
-  sub(other: Vec2): Vec2 {
+  sub(other: Vec2): this {
     this.x -= other.x
     this.y -= other.y
     return this
@@ -72,7 +72,7 @@ export class Vec2 {
   }
 
   /** Multiply each component by a scalar factor `n` */
-  scale(n: number): Vec2 {
+  scale(n: number): this {
     this.x *= n
     this.y *= n
     return this
@@ -83,7 +83,7 @@ export class Vec2 {
   }
 
   /** Component-wise multiplication (Hadamard product) */
-  mult(other: Vec2): Vec2 {
+  mult(other: Vec2): this {
     this.x *= other.x
     this.y *= other.y
     return this
@@ -94,7 +94,7 @@ export class Vec2 {
   }
 
   /** Component-wise division */
-  div(other: Vec2): Vec2 {
+  div(other: Vec2): this {
     this.x /= other.x
     this.y /= other.y
     return this
@@ -109,7 +109,7 @@ export class Vec2 {
    * to rotate by. If two values are given, they are assumed to be
    * pre-computed sine and cosine values to rotate by.
    */
-  rotate(rad: number, cos?: number): Vec2 {
+  rotate(rad: number, cos?: number): this {
     if (cos === undefined) {
       cos = Math.cos(rad)
       rad = Math.sin(rad)
@@ -161,7 +161,7 @@ export class Vec2 {
   }
 
   /** Make a vector in the same direction with a magnitude of 1 */
-  normal(): Vec2 {
+  normal(): this {
     const mag = this.mag()
     this.x /= mag
     this.y /= mag

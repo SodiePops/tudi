@@ -35,7 +35,7 @@ export class Matrix {
   }
 
   /** Reset matrix to identity matrix values */
-  identity(): Matrix {
+  identity(): this {
     this.a = 1
     this.b = 0
     this.c = 0
@@ -46,7 +46,7 @@ export class Matrix {
   }
 
   /** Scale matrix in x and y directions by scalar or vector */
-  scale(sx: number | Vec2, sy?: number): Matrix {
+  scale(sx: number | Vec2, sy?: number): this {
     if (sx instanceof Vec2) {
       sy = sx.y
       sx = sx.x
@@ -64,7 +64,7 @@ export class Matrix {
   // TODO: Implement global engine options to use rad/deg/turn
   // turns are #1
   /** Rotate matrix by given radians */
-  rotate(rad: number): Matrix {
+  rotate(rad: number): this {
     const sin = Math.sin(rad)
     const cos = Math.cos(rad)
 
@@ -86,7 +86,7 @@ export class Matrix {
    * x and y values of the provided Vec2. Otherwise, arguments are
    * x and y scalar values to move matrix by.
    */
-  translate(dx: number | Vec2, dy?: number): Matrix {
+  translate(dx: number | Vec2, dy?: number): this {
     if (dx instanceof Vec2) {
       dy = dx.y
       dx = dx.x
@@ -103,7 +103,7 @@ export class Matrix {
   /**
    * Copies values of other matrix to this one
    */
-  copy(other: Matrix): Matrix {
+  copy(other: Matrix): this {
     this.a = other.a
     this.b = other.b
     this.c = other.c
@@ -227,7 +227,7 @@ export class Matrix {
     d: number,
     tx: number,
     ty: number
-  ): Matrix {
+  ): this {
     this.a = a
     this.b = b
     this.c = c
@@ -241,7 +241,7 @@ export class Matrix {
   /**
    * Multiply this matrix by another
    */
-  multiply(m: Matrix): Matrix {
+  multiply(m: Matrix): this {
     const a: number = this.a * m.a + this.c * m.b
     const b: number = this.b * m.a + this.d * m.b
 
