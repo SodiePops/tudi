@@ -11,7 +11,6 @@ import { RenderTarget } from '../graphics/renderTarget'
  */
 export class Camera extends Component {
   name = 'camera'
-  frameCount: number = 0
   target: RenderTarget
   clearColor: Color = new Color(0, 0, 0, 0)
   shaderUniformName: string = 'matrix'
@@ -20,7 +19,7 @@ export class Camera extends Component {
   get matrix(): Matrix {
     return this._matrix
       .copy(Game.graphics.orthographic)
-      .multiply(this.entity.transform.worldTransform)
+      .multiply(this.entity.transform.worldTransform.inverse())
   }
 
   get mouse(): Vec2 {
@@ -77,7 +76,7 @@ export class Camera extends Component {
   }
 
   private getExtents() {
-    const inverse = this.entity.transform.worldTransform.inverse()
+    const inverse = this.entity.transform.worldTransform
     this.extentsA = inverse.transformPoint(new Vec2(0, 0))
     this.extentsB = inverse.transformPoint(new Vec2(Game.width, 0))
     this.extentsC = inverse.transformPoint(new Vec2(0, Game.height))

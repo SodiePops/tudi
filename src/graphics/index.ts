@@ -477,7 +477,7 @@ export class Graphics {
   private topRight = new Vec2()
   private botLeft = new Vec2()
   private botRight = new Vec2()
-  private texToDraw = new Texture(null, 0, 0, new Rectangle(), new Rectangle())
+  private texToDraw = new Texture(null, 0, 0, new Rectangle())
 
   private scaledOrigin = new Vec2()
 
@@ -498,9 +498,8 @@ export class Graphics {
     } else {
       t = tex.getSubtexture(crop, this.texToDraw)
     }
-
-    const left = -t.frame.x
-    const top = -t.frame.y
+    const left = 0
+    const top = 0
     const width = t.bounds.width
     const height = t.bounds.height
 
@@ -510,7 +509,10 @@ export class Graphics {
     this.botRight.set(left + width, top + height)
 
     if (origin && (origin.x !== 0 || origin.y !== 0)) {
-      this.scaledOrigin.set(origin.x * tex.width, origin.y * tex.height)
+      this.scaledOrigin.set(
+        origin.x * t.bounds.width,
+        origin.y * t.bounds.width
+      )
       this.topLeft.sub(this.scaledOrigin)
       this.topRight.sub(this.scaledOrigin)
       this.botLeft.sub(this.scaledOrigin)
@@ -523,11 +525,10 @@ export class Graphics {
     this.botLeft = mat.transformPoint(this.botLeft)
     this.botRight = mat.transformPoint(this.botRight)
 
-    let uvMinX = t.bounds.x / t.width
-    let uvMinY = t.bounds.y / t.height
-    let uvMaxX = uvMinX + width / t.width
-    let uvMaxY = uvMinY + height / t.height
-
+    let uvMinX = t.bounds.x / t.texWidth
+    let uvMinY = t.bounds.y / t.texHeight
+    let uvMaxX = uvMinX + width / t.texWidth
+    let uvMaxY = uvMinY + height / t.texHeight
     if (flipX) {
       const a = uvMinX
       uvMinX = uvMaxX

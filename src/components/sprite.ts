@@ -42,12 +42,10 @@ export class SpriteComponent extends Component {
         tex: this.texture,
         mat: this.entity.transform.worldTransform,
         origin: this.origin, // TODO: Fill in rest of these?
-        crop: null,
         color: null,
         flipX: false,
         flipY: false,
       })
-      ;(<any>window).t = this.entity.transform
     }
   }
 

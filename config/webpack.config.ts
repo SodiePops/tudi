@@ -37,9 +37,10 @@ const config: webpack.Configuration = {
       },
     ],
   },
-  plugins: [
-    new webpack.optimize.ModuleConcatenationPlugin(),
-  ],
+  node: {
+    fs: 'empty',
+  },
+  plugins: [new webpack.optimize.ModuleConcatenationPlugin()],
 }
 
 export default config

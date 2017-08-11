@@ -10,8 +10,8 @@ export class Texture {
   webGLTexture: WebGLTexture
   /** The path to the image the Texture was created from  */
   path: string
+  /** The cropped bounds of the texture */
   bounds: Rectangle
-  frame: Rectangle
   disposed: boolean = false
   center: Vec2
   metadata: { [path: string]: any } = {}
@@ -20,15 +20,9 @@ export class Texture {
   texWidth: number
   texHeight: number
   get width(): number {
-    return this.frame.width
-  }
-  get height(): number {
-    return this.frame.height
-  }
-  get clippedWidth(): number {
     return this.bounds.width
   }
-  get clippedHeight(): number {
+  get height(): number {
     return this.bounds.height
   }
 
@@ -36,16 +30,13 @@ export class Texture {
     tex: WebGLTexture | null,
     w: number,
     h: number,
-    bounds?: Rectangle,
-    frame?: Rectangle
+    bounds?: Rectangle
   ) {
     this.webGLTexture = tex
     this.texWidth = w
     this.texHeight = h
     this.bounds = bounds || new Rectangle(0, 0, this.texWidth, this.texHeight)
-    this.frame =
-      frame || new Rectangle(0, 0, this.bounds.width, this.bounds.height)
-    this.center = new Vec2(this.frame.width / 2, this.frame.height / 2)
+    this.center = new Vec2(this.bounds.width / 2, this.bounds.height / 2)
   }
 
   getSubtexture(clip: Rectangle, sub?: Texture): Texture {
@@ -55,31 +46,10 @@ export class Texture {
       sub = new Texture(this.webGLTexture, this.width, this.height)
     }
 
-    sub.bounds.x =
-      this.bounds.x +
-      Math.max(0, Math.min(this.bounds.width, clip.x + this.frame.x))
-    sub.bounds.y =
-      this.bounds.y +
-      Math.max(0, Math.min(this.bounds.height, clip.y + this.frame.y))
-    sub.bounds.width = Math.max(
-      0,
-      this.bounds.x +
-        Math.min(this.bounds.width, clip.x + this.frame.x + clip.width) -
-        sub.bounds.x
-    )
-    sub.bounds.height = Math.max(
-      0,
-      this.bounds.y +
-        Math.min(this.bounds.height, clip.y + this.frame.y + clip.height) -
-        sub.bounds.y
-    )
-
-    sub.frame.x = Math.min(0, this.frame.x + clip.x)
-    sub.frame.y = Math.min(0, this.frame.y + clip.y)
-    sub.frame.width = clip.width
-    sub.frame.height = clip.height
-    sub.center = new Vec2(sub.frame.width / 2, sub.frame.height / 2)
-
+    sub.bounds = clip.crop(this.bounds.clone())
+    sub.center = new Vec2(sub.bounds.width / 2, sub.bounds.height / 2)
+    sub.texWidth = this.texWidth
+    sub.texHeight = this.texHeight
     return sub
   }
 
@@ -88,15 +58,13 @@ export class Texture {
       this.webGLTexture,
       this.texWidth,
       this.texHeight,
-      this.bounds.clone(),
-      this.frame.clone()
+      this.bounds.clone()
     )
   }
 
   toString(): string {
     return `${this.path}:
-      bounds ${this.bounds.toString()}
-      frame  ${this.frame.toString()}`
+      bounds ${this.bounds.toString()}`
   }
 
   dispose() {
